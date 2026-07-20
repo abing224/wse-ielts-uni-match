@@ -1,0 +1,2841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WSE Pathway | Know Your Level. Reach Your University Goal.</title>
+  <meta name="description" content="Understand your WSE Level Check results and map your pathway to top universities like the University of Melbourne. Estimate learning time and track your academic requirements.">
+  <link rel="stylesheet" href="style.css">
+  <!-- Load Tailwind CSS CDN with custom config (Preflight disabled) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      },
+      theme: {
+        extend: {
+          colors: {
+            indies: {
+              navy: '#143d34',
+              orange: '#e89543',
+              orangeHover: '#d58431',
+              navyLight: '#1c4d42',
+              bgLight: '#f4f8f7',
+              border: '#d8e5e2',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Load React, ReactDOM and Babel from CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+
+  <div id="root"></div>
+
+  <!-- React application code using Babel -->
+  <script type="text/babel">
+
+    // Custom Icon Components for clean inline SVG loading without dependencies
+    const Icons = {
+      Check: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      ),
+      X: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      ),
+      BookOpen: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      ),
+      GraduationCap: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>
+      ),
+      Award: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"/></svg>
+      ),
+      Settings: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      ),
+      TrendingUp: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m22 7-8.5 8.5-5-5L2 18"/><path d="M16 7h6v6"/></svg>
+      ),
+      AlertCircle: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      ),
+      ArrowRight: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      ),
+      Info: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      )
+    };
+
+    // Default configuration levels list
+    const INITIAL_LEVELS = [
+      { level: 1, name: "Survival", cefr: "CEFR < A1", ielts: "IELTS 3.0", description: "Can understand and use very basic English expressions.", abilities: ["Understand very basic greetings", "Introduce yourself and ask simple questions", "Understand basic signs and notices"] },
+      { level: 2, name: "Survival", cefr: "CEFR < A1", ielts: "IELTS 3.0", description: "Can communicate in very simple everyday situations.", abilities: ["Describe where you live in simple terms", "Ask for basic directions", "Read simple vocabulary lists"] },
+      { level: 3, name: "Survival", cefr: "CEFR < A1", ielts: "IELTS 3.5", description: "Can understand basic conversations and express simple ideas.", abilities: ["Understand common everyday dialogues", "Order food at a restaurant", "Write simple personal messages"] },
+      { level: 4, name: "Waystage", cefr: "CEFR A1", ielts: "IELTS 3.5", description: "Can communicate in familiar everyday contexts.", abilities: ["Describe daily routines", "Ask and answer simple questions about work", "Understand simple text passages"] },
+      { level: 5, name: "Waystage", cefr: "CEFR A1", ielts: "IELTS 4.0", description: "Can express opinions and personal feelings simply.", abilities: ["Give reasons for preferences", "Write short letters about events", "Understand main ideas of simple stories"] },
+      { level: 6, name: "Upper Waystage", cefr: "CEFR A2", ielts: "IELTS 4.0", description: "Can communicate in familiar academic and daily situations.", abilities: ["Understand clear lectures on familiar topics", "Explain simple plans and dreams", "Write simple connected texts"] },
+      { level: 7, name: "Upper Waystage", cefr: "CEFR A2", ielts: "IELTS 4.5", description: "Can interact with reasonable fluency on routine matters.", abilities: ["Handle normal travel situations", "Describe experiences and ambitions", "Write reviews of movies or books"] },
+      { level: 8, name: "Upper Waystage", cefr: "CEFR A2", ielts: "IELTS 4.5", description: "Can express ideas clearly in writing on standard topics.", abilities: ["Write formal letters of inquiry", "Explain problems and suggest solutions", "Understand simple technical instructions"] },
+      { level: 9, name: "Upper Waystage", cefr: "CEFR A2", ielts: "IELTS 5.0", description: "Can understand detailed instructions and standard reports.", abilities: ["Participate in debates on familiar issues", "Write summaries of factual articles", "Understand core points of standard media broadcasts"] },
+      { level: 10, name: "Threshold", cefr: "CEFR B1", ielts: "IELTS 5.0", description: "Can understand main ideas of complex text on concrete topics.", abilities: ["Interact with native speakers with basic spontaneity", "Produce clear, detailed text on diverse subjects", "Explain a viewpoint on a topical issue"] },
+      { level: 11, name: "Threshold", cefr: "CEFR B1", ielts: "IELTS 5.5", description: "Can understand extended academic arguments.", abilities: ["Follow complex presentations in your field", "Write detailed, well-structured essays", "Participate actively in academic debates"] },
+      { level: 12, name: "Threshold", cefr: "CEFR B1", ielts: "IELTS 5.5", description: "Can communicate fluently in social and academic settings.", abilities: ["Express thoughts and opinions precisely", "Understand complex academic reading materials", "Write essays expressing critical arguments"] },
+      { level: 13, name: "Threshold", cefr: "CEFR B1", ielts: "IELTS 6.0", description: "Can write clear, structured project proposals and reports.", abilities: ["Deliver detailed academic presentations", "Synthesize information from multiple sources", "Participate fluently in complex team discussions"] },
+      { level: 14, name: "Milestone", cefr: "CEFR B2", ielts: "IELTS 6.0", description: "Can understand complex ideas and communicate with reasonable fluency.", abilities: ["Converse naturally with native speakers", "Understand complex technical documentation", "Write structured reports on abstract topics"] },
+      { level: 15, name: "Milestone", cefr: "CEFR B2", ielts: "IELTS 6.5", description: "Can communicate effectively in academic and professional contexts.", abilities: ["Write sophisticated research proposals", "Participate in academic seminars with ease", "Critique complex written and spoken arguments"] },
+      { level: 16, name: "Milestone", cefr: "CEFR B2", ielts: "IELTS 6.5", description: "Can read demanding academic journals and literature.", abilities: ["Understand nuances in academic lectures", "Write well-structured review papers", "Present complex thesis topics clearly"] },
+      { level: 17, name: "Milestone", cefr: "CEFR B2", ielts: "IELTS 7.0", description: "Can express ideas clearly and precisely in complex discussions.", abilities: ["Engage in high-level intellectual debate", "Draft comprehensive professional briefs", "Understand idiomatic expressions and cultural references"] },
+      { level: 18, name: "Mastery", cefr: "CEFR C1", ielts: "IELTS 7.0", description: "Can understand complex academic content and express ideas clearly.", abilities: ["Understand virtually all spoken and written input", "Write elegant, complex academic publications", "Deliver keynote presentations on specialized subjects"] },
+      { level: 19, name: "Mastery", cefr: "CEFR C1", ielts: "IELTS 7.5", description: "Demonstrates highly advanced English proficiency in all domains.", abilities: ["Negotiate complex agreements with native speakers", "Write authoritative reports and reviews", "Differentiate subtle shades of meaning under pressure"] },
+      { level: 20, name: "Mastery", cefr: "CEFR C1", ielts: "IELTS 7.5", description: "Demonstrates expert / near-native English command.", abilities: ["Express yourself spontaneously and very precisely", "Master structural and stylistic language nuances", "Review and edit academic research papers at publication standard"] }
+    ];
+
+    const JourneyIcons = {
+      Compass: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+      ),
+      Award: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"/></svg>
+      ),
+      BookOpen: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      ),
+      Plane: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C20 7 20 6.4 19.6 6c-.4-.4-1-.4-1.4 0L14.7 9.5 6.5 7.7c-.5-.1-1.1.1-1.4.5L3.6 9.7c-.3.4-.3 1 0 1.3L9 15l1.5 5.4c.1.5.5.9 1 .9h.4c.4 0 .9-.3 1.1-.7l1.7-2.6 4.3 1.2c.5.1 1.1-.2 1.2-.7.2-.6-.2-1.2-.4-1.3z"/></svg>
+      ),
+      Lock: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      ),
+      ChevronDown: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      ),
+      ChevronUp: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+      ),
+      Check: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      )
+    };
+
+    const JOURNEY_PHASES = [
+      {
+        id: "select",
+        title: "Phase 1: SELECT",
+        subtitle: "Expert Consultation",
+        icon: "Compass",
+        items: [
+          {
+            id: "select-uni",
+            text: (pack) => {
+              if (pack === "Silver" || pack === "Gold") return "Determine ideal university & major match (Up to 3 university matches)";
+              return "Determine ideal university & major match (Up to 5 university matches)";
+            },
+            description: "Analyze academic records, career aspirations, and preferences to identify the best universities and programs."
+          },
+          {
+            id: "select-english",
+            text: () => "Check English language proficiency score & skills suitability",
+            description: "Assess your current IELTS/WSE test scores to determine readiness for admission requirements."
+          },
+          {
+            id: "select-explore",
+            text: () => "Explore global university options",
+            description: "Research structural differences, tuition, rankings, and local opportunities at various target destinations."
+          }
+        ]
+      },
+      {
+        id: "empower",
+        title: "Phase 2: EMPOWER",
+        subtitle: "Skills Development",
+        icon: "Award",
+        items: [
+          {
+            id: "empower-ielts",
+            text: (ieltsPack) => {
+              if (ieltsPack === "essential") return "IELTS Essential Course";
+              if (ieltsPack === "masterclass") return "IELTS Masterclass Course";
+              return "IELTS Masterclass Pro Course";
+            },
+            description: (ieltsPack) => {
+              if (ieltsPack === "essential") {
+                return (
+                  <div className="mt-2 space-y-1.5 border-t border-slate-100 pt-2 text-xs">
+                    <span className="block font-bold text-slate-700">BENEFIT IELTS ESSENTIAL:</span>
+                    <ul className="list-disc pl-4 space-y-1 text-slate-500">
+                      <li>VALIDITAS 3 BULAN (2 CYCLE)</li>
+                      <li>GEN ACE PREP (GENTEM CATALYST COURSE AND TRAINING) 3 BULAN</li>
+                      <li>{"TEACHER LED CLASS (2 HOUR > BOOK VIA ZOOM) - 12 STANDAR ONLINE (12 SESI PERTEMUAN)"}</li>
+                      <li>MOCK UP TEST (IELTS SIMULATION) 2 X</li>
+                    </ul>
+                  </div>
+                );
+              } else if (ieltsPack === "masterclass") {
+                return (
+                  <div className="mt-2 space-y-1.5 border-t border-slate-100 pt-2 text-xs">
+                    <span className="block font-bold text-slate-700">BENEFIT IELTS MASTERCLASS:</span>
+                    <ul className="list-disc pl-4 space-y-1 text-slate-500">
+                      <li>VALIDITAS 3 BULAN (2 CYCLE)</li>
+                      <li>(GENTEM CATALYST COURSE AND TRAINING) 3 BULAN</li>
+                      <li>1-1 dengan IELTS Specialist 1x pada saat selesai course</li>
+                      <li>{"TEACHER LED CLASS (2 HOUR > BOOK VIA ZOOM) - 12 SESI - ONLINE, 6 SESI - OFFLINE"}</li>
+                      <li>MOCK UP TEST (IELTS SIMULATION) 3 X</li>
+                    </ul>
+                  </div>
+                );
+              } else {
+                return (
+                  <div className="mt-2 space-y-1.5 border-t border-slate-100 pt-2 text-xs">
+                    <span className="block font-bold text-slate-700">BENEFIT IELTS MASTERCLASS PRO:</span>
+                    <ul className="list-disc pl-4 space-y-1 text-slate-500">
+                      <li>VALIDITAS 6 BULAN (4 CYCLE)</li>
+                      <li>(GENTEM CATALYST COURSE AND TRAINING) 6 BULAN</li>
+                      <li>1-1 dengan IELTS Specialist 6 x Coaching</li>
+                      <li>{"TEACHER LED CLASS (2 HOUR > BOOK VIA ZOOM) - 12 SESI - ONLINE, 6 SESI - OFFLINE"}</li>
+                      <li>MOCK UP TEST (IELTS SIMULATION) UNLIMITED</li>
+                    </ul>
+                  </div>
+                );
+              }
+            }
+          },
+          {
+            id: "empower-scholarship",
+            text: () => "Scholarship Application Guidance",
+            description: "Get 1-on-1 essay review and interview guidance with INDIES awardee mentors (Rolan, Devy, Jeremiah, etc.)."
+          },
+          {
+            id: "empower-uniprep",
+            text: () => "UniPrep Course (3-Month Academic Adaptation)",
+            description: "Prepare for success abroad with modules in Cultural Adaptation, Academic Writing/Excellence, and Career Readiness.",
+            unavailableIn: ["Silver"]
+          }
+        ]
+      },
+      {
+        id: "navigate",
+        title: "Phase 3: NAVIGATE",
+        subtitle: "Application Process",
+        icon: "BookOpen",
+        items: [
+          {
+            id: "navigate-docs",
+            text: () => "Admission to Departure Document Assistance",
+            description: "Complete and audit your transcripts, reference letters, bank statements, and cover letters with professional guidance."
+          },
+          {
+            id: "navigate-timeline",
+            text: () => "Jointly Agreed Application Timeline",
+            description: "Establish a mutually agreed application timeline and check milestones regularly to ensure on-time submissions."
+          }
+        ]
+      },
+      {
+        id: "depart",
+        title: "Phase 4: DEPART",
+        subtitle: "Overseas Transition",
+        icon: "Plane",
+        items: [
+          {
+            id: "depart-visa",
+            text: () => "Pre-departure Checklist (Passport & Visa)",
+            description: "Prepare your student visa application dossiers and perform mock visa interviews for high success rate."
+          },
+          {
+            id: "depart-housing",
+            text: () => "Housing & Accommodation Placement Support",
+            description: "Receive trusted housing options near campus and guidance on rent contracts and roommate searches.",
+            unavailableIn: ["Silver"]
+          },
+          {
+            id: "depart-community",
+            text: () => "Student Community Connection",
+            description: "Connect with current Indonesian students and alumni groups at your target university to ease your integration."
+          },
+          {
+            id: "depart-postarrival",
+            text: () => "Post-Arrival Support Contact",
+            description: "Gain access to a helpline for immediate guidance on bank account setup, sim card activation, and urgent matters."
+          }
+        ]
+      }
+    ];
+
+    function StudentJourneyTracker({ userInputs = { currentLevel: 12 }, config = { targetWseLevel: 15, englishRequirementLabel: "IELTS 6.5 Overall", levels: INITIAL_LEVELS, university: "University of Melbourne" } } = {}) {
+      // 1. Package state (Silver, Gold, Platinum)
+      const [selectedPackage, setSelectedPackage] = React.useState(() => {
+        return localStorage.getItem("indies_package") || "Platinum";
+      });
+
+      // 1b. IELTS Package state (essential, masterclass, masterclass_pro)
+      const [selectedIeltsPackage, setSelectedIeltsPackage] = React.useState(() => {
+        return localStorage.getItem("indies_ielts_package") || "essential";
+      });
+
+      // 1c. Questionnaire step tracker
+      const [currentStep, setCurrentStep] = React.useState(1);
+      const [isUniPrepListOpen, setIsUniPrepListOpen] = React.useState(false);
+      const [showSummaryModal, setShowSummaryModal] = React.useState(false);
+
+      // 2. Checked items state
+      const [checkedItems, setCheckedItems] = React.useState(() => {
+        try {
+          const saved = localStorage.getItem("indies_checked_items");
+          return saved ? JSON.parse(saved) : {};
+        } catch (e) {
+          return {};
+        }
+      });
+
+      // 3. Accordion state (expanded phases)
+      const [expandedPhases, setExpandedPhases] = React.useState({
+        select: true,
+        empower: true,
+        navigate: true,
+        depart: true
+      });
+
+      // 4. View Mode (tracker vs builder)
+      const [activeMode, setActiveMode] = React.useState(() => {
+        return localStorage.getItem("indies_active_mode") || "tracker";
+      });
+
+      const currentLevelData = React.useMemo(() => {
+        return config.levels.find(l => l.level === userInputs.currentLevel) || config.levels[0];
+      }, [config.levels, userInputs.currentLevel]);
+
+      // 5. Custom Builder needs
+      const [builderNeeds, setBuilderNeeds] = React.useState(() => {
+        try {
+          const saved = localStorage.getItem("indies_builder_needs");
+          const parsed = saved ? JSON.parse(saved) : null;
+          return parsed 
+            ? { ieltsOption: "essential", needsScholarship: false, ...parsed } 
+            : { uniCount: "3", needsUniPrep: false, needsHousing: false, needsScholarship: false, ieltsOption: "essential" };
+        } catch (e) {
+          return { uniCount: "3", needsUniPrep: false, needsHousing: false, needsScholarship: false, ieltsOption: "essential" };
+        }
+      });
+
+      React.useEffect(() => {
+        localStorage.setItem("indies_package", selectedPackage);
+      }, [selectedPackage]);
+
+      React.useEffect(() => {
+        localStorage.setItem("indies_ielts_package", selectedIeltsPackage);
+      }, [selectedIeltsPackage]);
+
+      React.useEffect(() => {
+        localStorage.setItem("indies_checked_items", JSON.stringify(checkedItems));
+      }, [checkedItems]);
+
+      React.useEffect(() => {
+        localStorage.setItem("indies_active_mode", activeMode);
+      }, [activeMode]);
+
+      React.useEffect(() => {
+        localStorage.setItem("indies_builder_needs", JSON.stringify(builderNeeds));
+      }, [builderNeeds]);
+
+      const isItemAvailable = (item) => {
+        if (!item.unavailableIn) return true;
+        return !item.unavailableIn.includes(selectedPackage);
+      };
+
+      const handleToggleItem = (itemId, isAvailable) => {
+        if (!isAvailable) return;
+        setCheckedItems(prev => ({
+          ...prev,
+          [itemId]: !prev[itemId]
+        }));
+      };
+
+      const togglePhase = (phaseId) => {
+        setExpandedPhases(prev => ({
+          ...prev,
+          [phaseId]: !prev[phaseId]
+        }));
+      };
+
+      // Recommended INDIES Package Logic
+      const recommendedIndiesPackage = React.useMemo(() => {
+        if (builderNeeds.uniCount === "5" || (builderNeeds.needsScholarship && builderNeeds.needsUniPrep)) {
+          return "Platinum";
+        } else if (builderNeeds.needsScholarship || builderNeeds.needsUniPrep) {
+          return "Gold";
+        } else {
+          return "Silver";
+        }
+      }, [builderNeeds]);
+
+      // Recommended IELTS Package Logic
+      const recommendedIeltsPackage = React.useMemo(() => {
+        if (builderNeeds.ieltsOption === "masterclass_pro") {
+          return "IELTS Masterclass Pro";
+        } else if (builderNeeds.ieltsOption === "masterclass") {
+          return "IELTS Masterclass";
+        } else {
+          return "IELTS Essential";
+        }
+      }, [builderNeeds]);
+
+      const stats = React.useMemo(() => {
+        let totalActive = 0;
+        let completedActive = 0;
+        const phaseProgress = {};
+
+        JOURNEY_PHASES.forEach(phase => {
+          let phaseTotal = 0;
+          let phaseCompleted = 0;
+
+          phase.items.forEach(item => {
+            if (isItemAvailable(item)) {
+              phaseTotal++;
+              totalActive++;
+              if (checkedItems[item.id]) {
+                phaseCompleted++;
+                completedActive++;
+              }
+            }
+          });
+
+          phaseProgress[phase.id] = {
+            total: phaseTotal,
+            completed: phaseCompleted
+          };
+        });
+
+        const percent = totalActive > 0 ? Math.round((completedActive / totalActive) * 100) : 0;
+        return {
+          total: totalActive,
+          completed: completedActive,
+          percent,
+          phases: phaseProgress
+        };
+      }, [selectedPackage, checkedItems]);
+
+      const packageDescriptions = {
+        Silver: "Basic admission support for up to 3 university choices. IELTS Prep & documents checklist. (Excludes UniPrep course & Housing recommendation).",
+        Gold: "Complete service package for up to 3 university options. Includes UniPrep, 1-on-1 essay mentoring with scholarship awardees, & housing/visa guidance.",
+        Platinum: "Premium unlimited A-Z package for up to 5 university options. Full priority guidance across all phases including scholarship interviews & housing placement."
+      };
+
+      const renderServiceBuilder = () => {
+        return (
+          <div className="p-4 md:p-6 bg-slate-50/50 space-y-6">
+            {/* Find Your Ideal Support Package Card */}
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+              <div className="border-b border-slate-100 pb-4 mb-5">
+                <h4 className="text-xl font-extrabold text-slate-800 mb-1.5">Find Your Ideal Support Package</h4>
+                <p className="text-xs text-slate-500 leading-relaxed mb-0">
+                  Jawab beberapa pertanyaan berikut untuk mengetahui jenis pendampingan yang paling sesuai dengan kebutuhan studi dan rencana Anda.
+                </p>
+              </div>
+
+              {/* Progress Indicator */}
+              <div className="flex justify-between items-center mb-6">
+                <span className="text-xs font-bold text-[#143d34] uppercase tracking-wider">Step {currentStep} of 3</span>
+                <div className="w-32 bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                  <div 
+                    className="bg-[#e89543] h-full transition-all duration-300"
+                    style={{ width: `${(currentStep / 3) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              {/* Question Render Switch */}
+              {currentStep === 1 && (
+                <div className="space-y-4">
+                  <div>
+                    <h5 className="text-sm font-bold text-slate-900 mb-1.5">1. Jumlah Universitas Tujuan (Pilihan Kampus)</h5>
+                    <p className="text-xs text-slate-500 leading-relaxed mb-4">
+                      Pilih jumlah universitas luar negeri yang ingin Anda daftarkan.
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div 
+                      onClick={() => setBuilderNeeds(prev => ({ ...prev, uniCount: "3" }))}
+                      className={`p-4 rounded-xl border cursor-pointer transition-all duration-300 ${
+                        builderNeeds.uniCount === "3" 
+                          ? "border-[#e89543] bg-orange-50/20 shadow-sm" 
+                          : "border-slate-200 hover:border-slate-300 bg-white"
+                      }`}
+                    >
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-bold text-sm text-slate-800">Maks. 3 Universitas</span>
+                        <input 
+                          type="radio" 
+                          checked={builderNeeds.uniCount === "3"} 
+                          onChange={() => {}}
+                          className="accent-[#e89543]" 
+                        />
+                      </div>
+                      <span className="text-xs text-slate-500">Cocok untuk pilihan target universitas terfokus (Silver / Gold).</span>
+                    </div>
+                    <div 
+                      onClick={() => setBuilderNeeds(prev => ({ ...prev, uniCount: "5" }))}
+                      className={`p-4 rounded-xl border cursor-pointer transition-all duration-300 ${
+                        builderNeeds.uniCount === "5" 
+                          ? "border-[#e89543] bg-orange-50/20 shadow-sm" 
+                          : "border-slate-200 hover:border-slate-300 bg-white"
+                      }`}
+                    >
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-bold text-sm text-slate-800">Maks. 5 Universitas</span>
+                        <input 
+                          type="radio" 
+                          checked={builderNeeds.uniCount === "5"} 
+                          onChange={() => {}}
+                          className="accent-[#e89543]" 
+                        />
+                      </div>
+                      <span className="text-xs text-slate-500">Opsi lebih luas untuk memaksimalkan peluang lolos (Membutuhkan Platinum).</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {currentStep === 2 && (
+                <div className="space-y-4">
+                  <div>
+                    <h5 className="text-sm font-bold text-slate-900 mb-1.5">2. Apakah Anda membutuhkan guidance untuk beasiswa?</h5>
+                    <p className="text-xs text-slate-500 leading-relaxed mb-4">
+                      Termasuk beasiswa internal universitas maupun beasiswa eksternal/internasional.
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    <div 
+                      onClick={() => setBuilderNeeds(prev => ({ ...prev, needsScholarship: true }))}
+                      className={`p-4 rounded-xl border cursor-pointer transition-all duration-300 flex items-start gap-3 ${
+                        builderNeeds.needsScholarship === true 
+                          ? "border-[#e89543] bg-orange-50/20 shadow-sm" 
+                          : "border-slate-200 hover:border-slate-300 bg-white"
+                      }`}
+                    >
+                      <input 
+                        type="radio" 
+                        checked={builderNeeds.needsScholarship === true} 
+                        onChange={() => {}}
+                        className="mt-1 accent-[#e89543]" 
+                      />
+                      <div>
+                        <span className="font-bold text-sm text-slate-800 block mb-1">Ya, saya membutuhkan scholarship guidance</span>
+                        <span className="text-xs text-slate-500 leading-relaxed block mb-2 font-normal">
+                          Saya membutuhkan pendampingan untuk memahami dan mempersiapkan beasiswa universitas maupun beasiswa internasional.
+                        </span>
+                        <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-1 rounded inline-block font-semibold border border-slate-200">
+                          Contoh: Internal University Scholarship, LPDP, Fulbright, Stipendium Hungaricum, Erasmus Mundus, dan beasiswa lainnya.
+                        </span>
+                      </div>
+                    </div>
+                    <div 
+                      onClick={() => setBuilderNeeds(prev => ({ ...prev, needsScholarship: false }))}
+                      className={`p-4 rounded-xl border cursor-pointer transition-all duration-300 flex items-start gap-3 ${
+                        builderNeeds.needsScholarship === false 
+                          ? "border-[#e89543] bg-orange-50/20 shadow-sm" 
+                          : "border-slate-200 hover:border-slate-300 bg-white"
+                      }`}
+                    >
+                      <input 
+                        type="radio" 
+                        checked={builderNeeds.needsScholarship === false} 
+                        onChange={() => {}}
+                        className="mt-1 accent-[#e89543]" 
+                      />
+                      <div>
+                        <span className="font-bold text-sm text-slate-800 block mb-1">Tidak untuk saat ini</span>
+                        <span className="text-xs text-slate-500 leading-relaxed block font-normal">
+                          Saya hanya membutuhkan pendampingan untuk proses pendaftaran universitas.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {currentStep === 3 && (
+                <div className="space-y-4">
+                  <div>
+                    <h5 className="text-sm font-bold text-slate-900 mb-1.5">3. Apakah Anda membutuhkan University Preparation Program (UniPrep)?</h5>
+                    <p className="text-xs text-slate-500 leading-relaxed mb-4">
+                      UniPrep membantu Anda mempersiapkan diri secara akademik dan personal sebelum memulai kehidupan universitas di luar negeri.
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    <div 
+                      onClick={() => setBuilderNeeds(prev => ({ ...prev, needsUniPrep: true }))}
+                      className={`p-4 rounded-xl border cursor-pointer transition-all duration-300 flex flex-col ${
+                        builderNeeds.needsUniPrep === true 
+                          ? "border-[#e89543] bg-orange-50/20 shadow-sm" 
+                          : "border-slate-200 hover:border-slate-300 bg-white"
+                      }`}
+                    >
+                      <div className="flex items-start gap-3 w-full">
+                        <input 
+                          type="radio" 
+                          checked={builderNeeds.needsUniPrep === true} 
+                          onChange={() => {}}
+                          className="mt-1 accent-[#e89543]" 
+                        />
+                        <div className="flex-1">
+                          <span className="font-bold text-sm text-slate-800 block mb-1">Ya, saya membutuhkan UniPrep</span>
+                          <span className="text-xs text-slate-500 leading-relaxed block font-normal">
+                            Saya ingin mempersiapkan diri sebelum kuliah di luar negeri.
+                          </span>
+                        </div>
+                      </div>
+
+                      {builderNeeds.needsUniPrep && (
+                        <div className="mt-3 ml-6 border-t border-dashed border-slate-200 pt-3">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setIsUniPrepListOpen(!isUniPrepListOpen);
+                            }}
+                            className="text-xs font-bold text-[#e89543] hover:text-[#d58431] bg-transparent border-0 cursor-pointer flex items-center gap-1"
+                          >
+                            <span>{isUniPrepListOpen ? "Hide what is included" : "View what is included"}</span>
+                            <svg className={`w-3.5 h-3.5 transition-transform duration-300 ${isUniPrepListOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                          </button>
+                          
+                          {isUniPrepListOpen && (
+                            <div className="mt-3 p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600">
+                              <span className="block font-bold text-slate-800 mb-2">UniPrep includes 12 structured lessons:</span>
+                              <ol className="list-decimal pl-4 space-y-1.5 font-medium">
+                                <li>Surviving Your First Month Abroad</li>
+                                <li>Adapting to the University Environment</li>
+                                <li>Academic Reading Strategies</li>
+                                <li>Academic Writing Fundamentals</li>
+                                <li>Advanced Academic Writing</li>
+                                <li>Effective Presentations</li>
+                                <li>Participating in Academic Discussions</li>
+                                <li>Academic Stress Management</li>
+                                <li>Building Your Global Network</li>
+                                <li>CV Writing & Personal Branding</li>
+                                <li>Applying for an Internship Abroad</li>
+                                <li>Creating a University Success Plan</li>
+                              </ol>
+                              <span className="block text-[10px] text-slate-400 mt-3 border-t border-slate-200 pt-2 font-normal italic">
+                                * Catatan: 12 modul di atas tergabung dalam satu program utuh dan tidak dapat dipilih secara terpisah.
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div 
+                      onClick={() => setBuilderNeeds(prev => ({ ...prev, needsUniPrep: false }))}
+                      className={`p-4 rounded-xl border cursor-pointer transition-all duration-300 flex items-start gap-3 ${
+                        builderNeeds.needsUniPrep === false 
+                          ? "border-[#e89543] bg-orange-50/20 shadow-sm" 
+                          : "border-slate-200 hover:border-slate-300 bg-white"
+                      }`}
+                    >
+                      <input 
+                        type="radio" 
+                        checked={builderNeeds.needsUniPrep === false} 
+                        onChange={() => {}}
+                        className="mt-1 accent-[#e89543]" 
+                      />
+                      <div>
+                        <span className="font-bold text-sm text-slate-800 block mb-1">Tidak untuk saat ini</span>
+                        <span className="text-xs text-slate-500 leading-relaxed block font-normal">
+                          Saya hanya membutuhkan university application support.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Wizard Navigation */}
+              <div className="flex justify-between items-center mt-6 pt-4 border-t border-slate-100">
+                {currentStep > 1 ? (
+                  <button
+                    type="button"
+                    onClick={() => setCurrentStep(prev => prev - 1)}
+                    className="px-5 py-2.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-white text-slate-700 font-bold text-xs cursor-pointer transition-all duration-300 flex items-center gap-1.5"
+                  >
+                    ← Kembali
+                  </button>
+                ) : (
+                  <div></div>
+                )}
+                {currentStep < 3 ? (
+                  <button
+                    type="button"
+                    onClick={() => setCurrentStep(prev => prev + 1)}
+                    className="px-6 py-2.5 rounded-xl bg-[#143d34] hover:bg-[#1c4d42] text-white font-bold text-xs cursor-pointer transition-all duration-300 flex items-center gap-1.5"
+                  >
+                    Lanjut →
+                  </button>
+                ) : (
+                  <div className="text-xs font-bold text-emerald-600 flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-full">
+                    <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Kuesioner Selesai
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* IELTS Prep Course Selection */}
+            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+              <h4 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <span className="text-[#e89543]">3.</span> Program Persiapan IELTS (IELTS Prep Course)
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* IELTS Essential */}
+                <div 
+                  onClick={() => setBuilderNeeds(prev => ({ ...prev, ieltsOption: "essential" }))}
+                  className={`p-4 rounded-xl border cursor-pointer transition-all duration-300 flex flex-col justify-between hover:shadow-md ${
+                    builderNeeds.ieltsOption === "essential" 
+                      ? "border-[#e89543] bg-orange-50/20 shadow-sm ring-1 ring-[#e89543]" 
+                      : "border-slate-200 hover:border-slate-300 bg-white"
+                  }`}
+                >
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-extrabold uppercase tracking-wider">
+                        Standard
+                      </span>
+                      <input 
+                        type="radio" 
+                        checked={builderNeeds.ieltsOption === "essential"} 
+                        onChange={() => {}}
+                        className="accent-[#e89543]" 
+                      />
+                    </div>
+                    <span className="font-bold text-sm text-slate-800 block mb-1">IELTS Essential</span>
+                    <span className="text-[11px] font-semibold text-[#e89543] block mb-3">VALIDITAS 3 BULAN (2 CYCLE)</span>
+                    <ul className="text-xs text-slate-500 space-y-2 list-none pl-0">
+                      <li className="flex items-start gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                        <span>GEN ACE PREP (3 Bulan Catalyst Course & Training)</span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                        <span>Teacher Led Class (2 Hour, Zoom) - 12 Sesi Online (12 Pertemuan)</span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                        <span>Mock Up Test (IELTS Simulation) 2 X</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* IELTS Masterclass */}
+                <div 
+                  onClick={() => setBuilderNeeds(prev => ({ ...prev, ieltsOption: "masterclass" }))}
+                  className={`p-4 rounded-xl border cursor-pointer transition-all duration-300 flex flex-col justify-between hover:shadow-md ${
+                    builderNeeds.ieltsOption === "masterclass" 
+                      ? "border-[#e89543] bg-orange-50/20 shadow-sm ring-1 ring-[#e89543]" 
+                      : "border-slate-200 hover:border-slate-300 bg-white"
+                  }`}
+                >
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-[10px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-extrabold uppercase tracking-wider">
+                        Most Popular
+                      </span>
+                      <input 
+                        type="radio" 
+                        checked={builderNeeds.ieltsOption === "masterclass"} 
+                        onChange={() => {}}
+                        className="accent-[#e89543]" 
+                      />
+                    </div>
+                    <span className="font-bold text-sm text-slate-800 block mb-1">IELTS Masterclass</span>
+                    <span className="text-[11px] font-semibold text-[#e89543] block mb-3">VALIDITAS 3 BULAN (2 CYCLE)</span>
+                    <ul className="text-xs text-slate-500 space-y-2 list-none pl-0">
+                      <li className="flex items-start gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                        <span>Gentem Catalyst Course & Training (3 Bulan)</span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                        <span>Teacher Led Class (2 Hour, Zoom) - 12 Sesi Online & 6 Sesi Offline</span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                        <span>1-1 Specialist Coaching: 1x (Selesai Course)</span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                        <span>Mock Up Test (IELTS Simulation) 3 X</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* IELTS Masterclass Pro */}
+                <div 
+                  onClick={() => setBuilderNeeds(prev => ({ ...prev, ieltsOption: "masterclass_pro" }))}
+                  className={`p-4 rounded-xl border cursor-pointer transition-all duration-300 flex flex-col justify-between hover:shadow-md ${
+                    builderNeeds.ieltsOption === "masterclass_pro" 
+                      ? "border-[#e89543] bg-orange-50/20 shadow-sm ring-1 ring-[#e89543]" 
+                      : "border-slate-200 hover:border-slate-300 bg-white"
+                  }`}
+                >
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-[10px] bg-slate-900 text-white px-2 py-0.5 rounded font-extrabold uppercase tracking-wider">
+                        Premium / VIP
+                      </span>
+                      <input 
+                        type="radio" 
+                        checked={builderNeeds.ieltsOption === "masterclass_pro"} 
+                        onChange={() => {}}
+                        className="accent-[#e89543]" 
+                      />
+                    </div>
+                    <span className="font-bold text-sm text-slate-800 block mb-1">IELTS Masterclass Pro</span>
+                    <span className="text-[11px] font-semibold text-[#e89543] block mb-3">VALIDITAS 6 BULAN (4 CYCLE)</span>
+                    <ul className="text-xs text-slate-500 space-y-2 list-none pl-0">
+                      <li className="flex items-start gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                        <span>Gentem Catalyst Course & Training (6 Bulan)</span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                        <span>Teacher Led Class (2 Hour, Zoom) - 12 Sesi Online & 6 Sesi Offline</span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                        <span>1-1 Specialist Coaching: 6x Sessions</span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                        <span className="font-semibold text-emerald-600">Mock Up Test (IELTS Simulation) UNLIMITED</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Recommendation Banner */}
+            <div className="bg-gradient-to-br from-[#143d34] via-[#1c4d42] to-[#143d34] rounded-2xl border-2 border-[#e89543]/30 p-6 md:p-8 text-white shadow-2xl space-y-6">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#e89543] px-3 py-1 rounded-full bg-[#e89543]/10 border border-[#e89543]/20 inline-block mb-4">
+                  Result Analysis
+                </span>
+                <h3 className="text-2xl md:text-3xl font-black tracking-tight leading-tight text-white mb-6">
+                  Rekomendasi Paket Studi & IELTS Anda
+                </h3>
+                
+                {/* Dual Package Recommendation Layout */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  {/* Paket INDIES Pathway Card */}
+                  <div className="p-5 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-between hover:bg-white/10 transition-all duration-300">
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#e89543] bg-[#e89543]/10 border border-[#e89543]/20 px-2.5 py-0.5 rounded-full inline-block">
+                          Recommended for you
+                        </span>
+                      </div>
+                      <span className="text-xs text-slate-400 block mb-0.5">Based on your answers, we recommend:</span>
+                      <h4 className="text-xl font-black text-white mb-2">{recommendedIndiesPackage} Package</h4>
+                      <p className="text-xs text-slate-300 leading-relaxed font-normal">
+                        {recommendedIndiesPackage === "Silver" && "Your needs are focused on university application support for up to 3 universities."}
+                        {recommendedIndiesPackage === "Gold" && "You need additional support beyond standard university applications, including scholarship guidance and/or UniPrep."}
+                        {recommendedIndiesPackage === "Platinum" && "Your goals require the most comprehensive support, including broader university applications and/or scholarship and preparation guidance."}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Paket Kelas IELTS Card */}
+                  <div className="p-5 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-between hover:bg-white/10 transition-all duration-300">
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 px-2.5 py-0.5 rounded-full inline-block mb-2">
+                        Paket Kelas IELTS
+                      </span>
+                      <h4 className="text-xl font-black text-white mb-2">{recommendedIeltsPackage}</h4>
+                      <p className="text-xs text-slate-300 leading-relaxed font-normal">
+                        {builderNeeds.ieltsOption === "essential" && "Program Essential (3 bulan, 12 sesi online, 2x simulasi mockup test, validitas program 3 bulan)."}
+                        {builderNeeds.ieltsOption === "masterclass" && "Program Masterclass (3 bulan, 12 sesi online & 6 sesi offline, 1-1 specialist coaching, 3x simulasi)."}
+                        {builderNeeds.ieltsOption === "masterclass_pro" && "Program Masterclass Pro (6 bulan, 12 sesi online & 6 sesi offline, 6x specialist coaching, simulasi Unlimited)."}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-white/10 pt-6">
+                  <p className="text-xs text-slate-400 max-w-lg mb-0 font-normal">
+                    *Tekan tombol di samping untuk menerapkan rencana rekomendasi di atas langsung ke checklist perjalanan studi dan kelas IELTS Anda.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedPackage(recommendedIndiesPackage);
+                      setSelectedIeltsPackage(builderNeeds.ieltsOption);
+                      setShowSummaryModal(true);
+                    }}
+                    className="px-6 py-4 rounded-xl font-black bg-[#e89543] hover:bg-[#d58431] text-white border-0 transition-all duration-300 shadow-lg shadow-orange-500/30 cursor-pointer text-sm whitespace-nowrap hover:scale-105 active:scale-95 animate-pulse"
+                  >
+                    Terapkan Rencana & Buka Checklist
+                  </button>
+                </div>
+              </div>
+
+              {/* Selection Summary Tags */}
+              <div className="flex flex-wrap items-center gap-3 text-xs text-slate-300">
+                <span className="font-semibold">Selected Requirements:</span>
+                <span className="bg-white/10 px-3 py-1 rounded-full border border-white/5">
+                  🎓 {builderNeeds.uniCount} Universitas
+                </span>
+                {builderNeeds.needsScholarship && (
+                  <span className="bg-white/10 px-3 py-1 rounded-full border border-white/5 text-amber-300">
+                    🎓 + Scholarship Guidance
+                  </span>
+                )}
+                {builderNeeds.needsUniPrep && (
+                  <span className="bg-white/10 px-3 py-1 rounded-full border border-white/5 text-amber-300">
+                    📚 + UniPrep Course
+                  </span>
+                )}
+                <span className="bg-white/10 px-3 py-1 rounded-full border border-white/5 text-emerald-300 font-medium">
+                  📝 IELTS: {builderNeeds.ieltsOption === "essential" ? "Essential" : builderNeeds.ieltsOption === "masterclass" ? "Masterclass" : "Masterclass Pro"}
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      return (
+        <div className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden font-sans">
+          {/* Top Banner */}
+          <div className="bg-[#143d34] p-6 md:p-8 text-white">
+            
+            {/* Mode Switcher Header */}
+            <div className="flex border-b border-white/10 pb-4 mb-6 justify-between items-center flex-wrap gap-4">
+              <span className="text-xs uppercase font-extrabold tracking-wider text-slate-400">Mode Layanan:</span>
+              <div className="flex bg-slate-800/80 p-1 rounded-xl border border-slate-700/50">
+                <button
+                  type="button"
+                  onClick={() => setActiveMode("tracker")}
+                  className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 border-0 cursor-pointer ${
+                    activeMode === "tracker"
+                      ? "bg-[#e89543] text-white shadow-sm"
+                      : "text-slate-300 hover:text-white bg-transparent"
+                  }`}
+                >
+                  Lacak Checklist
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveMode("builder")}
+                  className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 border-0 cursor-pointer ${
+                    activeMode === "builder"
+                      ? "bg-[#e89543] text-white shadow-sm"
+                      : "text-slate-300 hover:text-white bg-transparent"
+                  }`}
+                >
+                  Rekomendasi Paket
+                </button>
+              </div>
+            </div>
+
+            {/* Dynamic Header Content based on active mode */}
+            {activeMode === "tracker" ? (
+              <div>
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                  <div>
+                    <h3 className="text-xl md:text-2xl font-bold tracking-tight mb-2 flex items-center gap-2">
+                      <span className="text-[#e89543]">INDIES</span> Student Journey & Package Tracker
+                    </h3>
+                    <p className="text-sm text-slate-300 max-w-xl font-normal">
+                      {packageDescriptions[selectedPackage]}
+                    </p>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto self-start lg:self-auto">
+                    {/* Paket INDIES Pathway Selector */}
+                    <div className="flex flex-col gap-1.5">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Paket INDIES Pathway</span>
+                      <div className="flex flex-wrap bg-slate-800/60 p-1 rounded-xl border border-slate-700/50 gap-0.5">
+                        {["Silver", "Gold", "Platinum"].map((pack) => {
+                          const isActive = selectedPackage === pack;
+                          return (
+                            <button
+                              key={pack}
+                              type="button"
+                              onClick={() => setSelectedPackage(pack)}
+                              className={`flex-1 min-w-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 border-0 cursor-pointer ${
+                                isActive
+                                  ? "bg-[#e89543] text-white shadow-lg shadow-[#e89543]/20"
+                                  : "text-slate-300 hover:text-white hover:bg-slate-700/40 bg-transparent"
+                              }`}
+                            >
+                              {pack}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Paket Kelas IELTS Selector */}
+                    <div className="flex flex-col gap-1.5">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Paket Kelas IELTS</span>
+                      <div className="flex flex-wrap bg-slate-800/60 p-1 rounded-xl border border-slate-700/50 gap-0.5">
+                        {[
+                          { key: "essential", label: "Essential" },
+                          { key: "masterclass", label: "Masterclass" },
+                          { key: "masterclass_pro", label: "Pro" }
+                        ].map((ielts) => {
+                          const isActive = selectedIeltsPackage === ielts.key;
+                          return (
+                            <button
+                              key={ielts.key}
+                              type="button"
+                              onClick={() => setSelectedIeltsPackage(ielts.key)}
+                              className={`flex-1 min-w-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 border-0 cursor-pointer ${
+                                isActive
+                                  ? "bg-[#e89543] text-white shadow-lg shadow-[#e89543]/20"
+                                  : "text-slate-300 hover:text-white hover:bg-slate-700/40 bg-transparent"
+                              }`}
+                            >
+                              {ielts.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Progress Section */}
+                <div className="mt-8 bg-white/10 p-5 rounded-2xl border border-white/5 backdrop-blur-md">
+                  <div className="flex justify-between items-center mb-2.5">
+                    <span className="text-sm font-semibold text-slate-200">Overall preparation status</span>
+                    <span className="text-lg font-bold text-[#e89543] bg-[#e89543]/10 px-3 py-1 rounded-full border border-[#e89543]/20">
+                      {stats.percent}% Completed
+                    </span>
+                  </div>
+                  <div className="w-full h-3.5 bg-slate-800/80 rounded-full overflow-hidden p-0.5 border border-slate-700/30">
+                    <div
+                      className="h-full bg-gradient-to-r from-[#e89543] to-amber-500 rounded-full transition-all duration-700 ease-out"
+                      style={{ width: `${stats.percent}%` }}
+                    ></div>
+                  </div>
+                  <div className="flex justify-between items-center mt-2.5 text-xs text-slate-400">
+                    <span>{stats.completed} of {stats.total} actions checked</span>
+                    {selectedPackage === "Silver" && (
+                      <span className="text-amber-400 font-medium">* 2 items locked in Silver package</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <h3 className="text-xl md:text-2xl font-bold tracking-tight mb-2 flex items-center gap-2">
+                  <span className="text-[#e89543]">INDIES</span> Custom Service Builder
+                </h3>
+                <p className="text-sm text-slate-300 max-w-2xl font-normal">
+                  Pilihlah opsi yang Anda inginkan untuk menemukan paket layanan INDIES yang paling sesuai dengan target persiapan kuliah luar negeri Anda.
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Body Content */}
+          {activeMode === "tracker" ? (
+            <div className="p-4 md:p-6 bg-slate-50/50 space-y-4">
+              {JOURNEY_PHASES.map((phase) => {
+                const isOpen = expandedPhases[phase.id];
+                const Icon = JourneyIcons[phase.icon];
+                const phaseStats = stats.phases[phase.id];
+                const isCompleted = phaseStats.completed === phaseStats.total;
+
+                return (
+                  <div
+                    key={phase.id}
+                    className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:border-slate-300 transition-all duration-300"
+                  >
+                    {/* Header */}
+                    <div
+                      onClick={() => togglePhase(phase.id)}
+                      className="flex justify-between items-center p-4 md:p-5 cursor-pointer hover:bg-slate-50 transition-colors select-none"
+                    >
+                      <div className="flex items-center gap-3.5">
+                        <div className={`p-2.5 rounded-xl ${
+                          isCompleted ? "bg-emerald-50 text-emerald-600" : "bg-indigo-50 text-[#143d34]"
+                        }`}>
+                          <Icon />
+                        </div>
+                        <div>
+                          <h4 className="text-base md:text-lg font-extrabold text-slate-900 leading-tight">
+                            {phase.title}
+                          </h4>
+                          <span className="text-xs text-slate-500 font-medium">
+                            {phase.subtitle}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${
+                          isCompleted
+                            ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                            : "bg-slate-100 border-slate-200 text-slate-700"
+                        }`}>
+                          {phaseStats.completed} / {phaseStats.total} Done
+                        </span>
+                        <div className="text-slate-400">
+                          {isOpen ? <JourneyIcons.ChevronUp /> : <JourneyIcons.ChevronDown />}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Body Content */}
+                    {isOpen && (
+                      <div className="border-t border-slate-100 p-4 md:p-5 space-y-4">
+                        {phase.items.map((item) => {
+                          const isAvailable = isItemAvailable(item);
+                          const isChecked = isAvailable && checkedItems[item.id];
+                          const packParam = item.id === "empower-ielts" ? selectedIeltsPackage : selectedPackage;
+                          const textLabel = item.text(packParam);
+
+                          return (
+                            <div
+                              key={item.id}
+                              onClick={() => handleToggleItem(item.id, isAvailable)}
+                              className={`group flex items-start gap-4 p-3 md:p-4 rounded-xl border transition-all duration-300 select-none ${
+                                !isAvailable
+                                  ? "bg-slate-50 border-slate-200 cursor-not-allowed opacity-60"
+                                  : isChecked
+                                    ? "bg-emerald-50/40 border-emerald-200/80 cursor-pointer"
+                                    : "bg-white border-slate-200 hover:border-[#143d34]/30 cursor-pointer"
+                              }`}
+                            >
+                              {/* Checkbox circle */}
+                              <div className="mt-0.5 flex-shrink-0">
+                                {!isAvailable ? (
+                                  <div className="w-6 h-6 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center text-slate-400">
+                                    <JourneyIcons.Lock />
+                                  </div>
+                                ) : isChecked ? (
+                                  <div className="w-6 h-6 rounded-full bg-emerald-500 border border-emerald-600 flex items-center justify-center text-white shadow-sm shadow-emerald-500/20">
+                                    <JourneyIcons.Check />
+                                  </div>
+                                ) : (
+                                  <div className="w-6 h-6 rounded-full border border-slate-300 bg-white group-hover:border-[#143d34] transition-colors flex items-center justify-center"></div>
+                                )}
+                              </div>
+
+                              {/* Descriptions */}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex flex-wrap items-center gap-2 mb-1">
+                                  <h5 className={`text-sm md:text-base font-bold leading-snug mb-0.5 ${
+                                    !isAvailable
+                                      ? "text-slate-400 line-through"
+                                      : isChecked
+                                        ? "text-slate-800"
+                                        : "text-slate-900"
+                                  }`}>
+                                    {textLabel}
+                                  </h5>
+                                  {!isAvailable && (
+                                    <span className="text-[10px] bg-slate-200 border border-slate-300 text-slate-600 px-2 py-0.5 rounded font-extrabold tracking-wide uppercase">
+                                      Not Available in {selectedPackage}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className={`text-xs md:text-sm leading-relaxed mb-0 ${
+                                  !isAvailable ? "text-slate-400" : "text-slate-500"
+                                }`}>
+                                  {typeof item.description === 'function' ? item.description(packParam) : item.description}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            renderServiceBuilder()
+          )}
+
+          {showSummaryModal && (
+            <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 overflow-y-auto">
+              <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-2xl w-full overflow-hidden animate-fadeIn my-8 text-left">
+                
+                {/* Modal Header */}
+                <div className="bg-[#143d34] p-6 text-white relative">
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      setShowSummaryModal(false);
+                      setActiveMode("tracker");
+                    }}
+                    className="absolute top-4 right-4 text-slate-400 hover:text-white bg-transparent border-0 cursor-pointer text-xl font-bold"
+                  >
+                    ✕
+                  </button>
+                  <h3 className="text-xl md:text-2xl font-black mb-1">Rencana Studi & Kelas IELTS Anda</h3>
+                  <p className="text-xs text-slate-300">Ringkasan kustomisasi jalur masuk universitas luar negeri</p>
+                </div>
+
+                {/* Modal Body */}
+                <div className="p-6 md:p-8 space-y-6">
+                  
+                  {/* Profile & Target Score Box */}
+                  <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <span className="text-[10px] uppercase font-extrabold tracking-wider text-slate-400 block">Prediksi Skor IELTS Sekarang</span>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-black text-slate-800">{currentLevelData.ielts.replace("IELTS ", "")}</span>
+                        <span className="text-xs text-slate-500 font-semibold">(WSE Lvl {userInputs.currentLevel})</span>
+                      </div>
+                    </div>
+                    <div className="space-y-1 border-t sm:border-t-0 sm:border-l border-slate-200 pt-3 sm:pt-0 sm:pl-4">
+                      <span className="text-[10px] uppercase font-extrabold tracking-wider text-slate-400 block">Target Universitas & IELTS</span>
+                      <div className="text-sm font-bold text-[#143d34] leading-tight">
+                        {config.university}
+                      </div>
+                      <div className="text-xs text-emerald-600 font-bold">
+                        Req: {config.englishRequirementLabel}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Package Inclusions Section */}
+                  <div className="space-y-4">
+                    {/* Pathway Package */}
+                    <div className="border border-slate-200 rounded-2xl p-4 bg-white shadow-sm">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#e89543]"></span>
+                        <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Paket INDIES Pathway</span>
+                      </div>
+                      <h4 className="text-base font-black text-[#143d34] mb-2">{selectedPackage} Package</h4>
+                      <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-medium">
+                        {selectedPackage === "Silver" && (
+                          <>
+                            <li>Admission support for up to 3 university choices</li>
+                            <li>Transcripts, CV, and basic documents checklist guidance</li>
+                            <li>Standard document audit & upload support</li>
+                            <li>Exclude: UniPrep course & Housing recommendation</li>
+                          </>
+                        )}
+                        {selectedPackage === "Gold" && (
+                          <>
+                            <li>Complete service package for up to 3 university choices</li>
+                            <li>Includes UniPrep Course (3-Month academic & cultural adaptation)</li>
+                            <li>1-on-1 essay mentoring & critique with scholarship awardee mentors</li>
+                            <li>Visa application checklists and mock interview practice</li>
+                            <li>Accommodation finder & housing placement support</li>
+                          </>
+                        )}
+                        {selectedPackage === "Platinum" && (
+                          <>
+                            <li>Premium unlimited A-Z package for up to 5 university choices</li>
+                            <li>Includes UniPrep Course (all 12 structured lessons included)</li>
+                            <li>Priority unlimited essay & personal statement reviews</li>
+                            <li>Scholarship interview coaching & mock panel sessions</li>
+                            <li>Full priority pre-departure, housing placement & visa support</li>
+                            <li>Priority post-arrival support helpline (bank account, SIM card, etc.)</li>
+                          </>
+                        )}
+                      </ul>
+                    </div>
+
+                    {/* IELTS Package */}
+                    <div className="border border-slate-200 rounded-2xl p-4 bg-white shadow-sm">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                        <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Paket Kelas IELTS</span>
+                      </div>
+                      <h4 className="text-base font-black text-[#143d34] mb-2">
+                        {selectedIeltsPackage === "essential" && "IELTS Essential"}
+                        {selectedIeltsPackage === "masterclass" && "IELTS Masterclass"}
+                        {selectedIeltsPackage === "masterclass_pro" && "IELTS Masterclass Pro"}
+                      </h4>
+                      <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-medium">
+                        {selectedIeltsPackage === "essential" && (
+                          <>
+                            <li>Validitas Program: 3 Bulan (2 Cycle)</li>
+                            <li>Gen Ace Prep (Gentem Catalyst Course & Training) 3 Bulan</li>
+                            <li>Teacher Led Class (2 Hours, book via Zoom) - 12 Sesi Standar Online</li>
+                            <li>Mock Up Test (IELTS Simulation) 2x</li>
+                          </>
+                        )}
+                        {selectedIeltsPackage === "masterclass" && (
+                          <>
+                            <li>Validitas Program: 3 Bulan (2 Cycle)</li>
+                            <li>Gentem Catalyst Course & Training 3 Bulan</li>
+                            <li>1-1 dengan IELTS Specialist 1x (pada saat selesai course)</li>
+                            <li>Teacher Led Class (2 Hours, Zoom) - 12 Sesi Online & 6 Sesi Offline</li>
+                            <li>Mock Up Test (IELTS Simulation) 3x</li>
+                          </>
+                        )}
+                        {selectedIeltsPackage === "masterclass_pro" && (
+                          <>
+                            <li>Validitas Program: 6 Bulan (4 Cycle)</li>
+                            <li>Gentem Catalyst Course & Training 6 Bulan</li>
+                            <li>1-1 dengan IELTS Specialist 6x Coaching Sessions</li>
+                            <li>Teacher Led Class (2 Hours, Zoom) - 12 Sesi Online & 6 Sesi Offline</li>
+                            <li>Mock Up Test (IELTS Simulation) UNLIMITED</li>
+                          </>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Consultation Box with specific phone number */}
+                  <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5 text-center space-y-2">
+                    <span className="text-xs font-bold text-slate-700 block">
+                      Butuh konsultasi lebih lanjut bersama Orang Tua? Hubungi Konsultan Pendidikan Anda:
+                    </span>
+                    <div className="flex items-center justify-center gap-2">
+                      <svg className="w-5 h-5 text-[#e89543]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                      </svg>
+                      <a 
+                        href="https://wa.me/6281281003323?text=Halo%20saya%20ingin%20berkonsultasi%20mengenai%20rencana%20studi%20WSE%20Pathway%20dan%20IELTS%20saya" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-lg font-black text-[#e89543] hover:text-[#d58431] no-underline hover:underline cursor-pointer"
+                      >
+                        081281003323
+                      </a>
+                    </div>
+                    <p className="text-[10px] text-slate-400">Ambil screenshot halaman ini untuk disimpan atau dibagikan.</p>
+                  </div>
+
+                </div>
+
+                {/* Modal Footer */}
+                <div className="bg-slate-50 p-6 border-t border-slate-100 flex gap-3 justify-end rounded-b-3xl">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowSummaryModal(false);
+                      setActiveMode("tracker");
+                    }}
+                    className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs cursor-pointer border-0 transition-all duration-300"
+                  >
+                    Buka Checklist Perjalanan
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // SCHOLARSHIP ADVISOR COMPONENT
+    // Based on study-abroad-scholarship-advisor-agent-skill framework
+    // Implements: 5-dimension scoring + STAR rubric + prioritized roadmap
+    // ─────────────────────────────────────────────────────────────────────────
+    function ScholarshipAdvisor() {
+      const [step, setStep] = React.useState(0); // 0=form, 1=results
+      const [loading, setLoading] = React.useState(false);
+      const [result, setResult] = React.useState(null);
+      const [activeTab, setActiveTab] = React.useState('overview');
+
+      const [form, setForm] = React.useState({
+        name: '',
+        gpa: '',
+        targetCountry: '',
+        targetProgram: '',
+        programLevel: 'undergraduate',
+        ieltsScore: '',
+        satScore: '',
+        essayText: '',
+        extracurricular: '',
+        financialNeed: false,
+        workExperience: '',
+        targetScholarship: '',
+        prepCountryText: '',
+        prepCoursesText: '',
+        prepAcadLifeText: ''
+      });
+
+      const COUNTRIES = ['Australia','USA','UK','Germany','Netherlands','Canada','Japan','South Korea','New Zealand','Singapore'];
+      const PROGRAMS = ['Engineering','Computer Science','Business Administration','Medicine','Law','Architecture','Psychology','Economics','Data Science','Environmental Science'];
+      const SCHOLARSHIPS = [
+        'Australia Awards','Chevening (UK)','DAAD (Germany)','Fulbright (USA)','Erasmus (EU)','MEXT (Japan)','NUS-MOE (Singapore)','LPDP (Indonesia)','ADB Scholarship','Open to Any'
+      ];
+
+      const handleChange = (field, value) => {
+        setForm(prev => ({ ...prev, [field]: value }));
+      };
+
+      // ── Scoring Engine (6-dimension rubric from the skill framework) ──
+      const computeResult = () => {
+        const isUndergrad = form.programLevel === 'undergraduate';
+        const rawAcademicScore = parseFloat(form.gpa) || 0;
+        const ielts = parseFloat(form.ieltsScore) || 0;
+        const sat = parseInt(form.satScore) || 0;
+        const essayLen = form.essayText.trim().split(/\s+/).filter(Boolean).length;
+        const hasExtracurricular = form.extracurricular.trim().length > 20;
+        const hasWorkExp = form.workExperience.trim().length > 10;
+
+        // 1. Essay Persuasiveness (20%) — based on length, keywords
+        const essayKeywords = ['passion','goal','impact','community','experience','research','future','contribute','challenge','overcome'];
+        const essayKeyHits = essayKeywords.filter(k => form.essayText.toLowerCase().includes(k)).length;
+        const essayLengthScore = Math.min(essayLen / 300, 1); // ideal ≥ 300 words
+        const essayScore = Math.round(((essayKeyHits / essayKeywords.length) * 0.5 + essayLengthScore * 0.5) * 100);
+
+        // 2. Profile-Program Fit (20%) — GPA/Report Card + IELTS alignment
+        const gpaScore = isUndergrad 
+          ? Math.min(rawAcademicScore, 100) 
+          : Math.min((rawAcademicScore / 4.0) * 100, 100);
+        const ieltsScore = ielts >= 7.5 ? 100 : ielts >= 7.0 ? 88 : ielts >= 6.5 ? 75 : ielts >= 6.0 ? 60 : ielts >= 5.5 ? 44 : 25;
+        const fitScore = Math.round(gpaScore * 0.6 + ieltsScore * 0.4);
+
+        // 3. Completeness & Eligibility (15%) — how much of the form is filled
+        const fields = [
+          form.name, form.targetCountry, form.targetProgram, form.ieltsScore, form.satScore, 
+          form.essayText, form.extracurricular, form.targetScholarship,
+          form.prepCountryText, form.prepCoursesText, form.prepAcadLifeText
+        ];
+        const filled = fields.filter(f => f && f.toString().trim().length > 0).length;
+        const completenessScore = Math.round((filled / fields.length) * 100);
+
+        // 4. Scholarship Match (10%) — financial need + target scholarship alignment
+        const schMatch = (form.financialNeed ? 30 : 0) + (form.targetScholarship ? 40 : 0) + (hasWorkExp ? 30 : 0);
+        const scholarshipScore = Math.min(schMatch, 100);
+
+        // 5. Competitiveness & Differentiation (15%)
+        const academicCompetitivenessPoints = isUndergrad
+          ? (rawAcademicScore >= 85 ? 15 : rawAcademicScore >= 75 ? 8 : 0)
+          : (rawAcademicScore >= 3.5 ? 15 : rawAcademicScore >= 3.0 ? 8 : 0);
+
+        const compScore = Math.round(
+          (hasExtracurricular ? 40 : 0) +
+          (hasWorkExp ? 25 : 0) +
+          (essayKeyHits >= 5 ? 20 : essayKeyHits * 4) +
+          academicCompetitivenessPoints
+        );
+
+        // 6. Social & Academic Preparedness (20%)
+        const countryLen = (form.prepCountryText || '').trim().split(/\s+/).filter(Boolean).length;
+        const hasCountryRef = form.targetCountry && (form.prepCountryText || '').toLowerCase().includes(form.targetCountry.toLowerCase());
+        const countryKeywords = ['culture', 'cultural', 'lifestyle', 'society', 'social', 'people', 'system', 'education', 'history', 'transport', 'weather', 'climate', 'living', 'cost', 'environment', 'tradition', 'customs', 'language'];
+        const countryKeyHits = countryKeywords.filter(k => (form.prepCountryText || '').toLowerCase().includes(k)).length;
+
+        let countryScore = 0;
+        if (countryLen > 0) {
+          if (countryLen <= 15) countryScore = 30;
+          else if (countryLen <= 45) countryScore = 55;
+          else if (countryLen <= 75) countryScore = 75;
+          else countryScore = 85;
+
+          if (hasCountryRef) countryScore += 10;
+          countryScore += Math.min(countryKeyHits * 3, 15);
+          countryScore = Math.min(countryScore, 100);
+        }
+        
+        let countryLevel = 'Superficial';
+        let countryFeedback = 'Answer is brief and lacks detail. Research the local culture, lifestyle, and education system.';
+        if (countryScore >= 80) {
+          countryLevel = 'Highly Well-Researched';
+          countryFeedback = 'Excellent! You demonstrate a deep, nuanced understanding of the country\'s cultural and social environment.';
+        } else if (countryScore >= 60) {
+          countryLevel = 'Reasonably Informed';
+          countryFeedback = 'Good understanding, but could include more specific observations about local lifestyle or lifestyle adaptation.';
+        } else if (countryScore >= 40) {
+          countryLevel = 'General';
+          countryFeedback = 'Basic knowledge. Try to look beyond superficial facts and research daily life and cultural norms.';
+        }
+
+        const coursesLen = (form.prepCoursesText || '').trim().split(/\s+/).filter(Boolean).length;
+        const coursesKeywords = ['module', 'course', 'credits', 'syllabus', 'curriculum', 'subject', 'class', 'professor', 'thesis', 'project', 'semester', 'specialization', 'electives', 'seminar', 'major', 'study', 'learn', 'practical', 'theory'];
+        const coursesKeyHits = coursesKeywords.filter(k => (form.prepCoursesText || '').toLowerCase().includes(k)).length;
+        const repeatsProgramOnly = form.targetProgram && 
+          (form.prepCoursesText || '').toLowerCase().includes(form.targetProgram.toLowerCase()) && 
+          coursesKeyHits <= 1 && 
+          coursesLen < 15;
+
+        let coursesScore = 0;
+        if (coursesLen > 0) {
+          if (coursesLen <= 15) coursesScore = 30;
+          else if (coursesLen <= 35) coursesScore = 50;
+          else if (coursesLen <= 65) coursesScore = 70;
+          else coursesScore = 85;
+
+          coursesScore += Math.min(coursesKeyHits * 4, 20);
+          
+          if (repeatsProgramOnly) {
+            coursesScore = Math.max(coursesScore - 20, 20);
+          }
+          
+          const goalKeywords = ['goal', 'future', 'career', 'aspiration', 'aim', 'prepare', 'specialize', 'interest'];
+          const goalKeyHits = goalKeywords.filter(k => (form.prepCoursesText || '').toLowerCase().includes(k)).length;
+          if (goalKeyHits > 0) coursesScore += 5;
+
+          coursesScore = Math.min(coursesScore, 100);
+        }
+
+        let coursesLevel = 'Vague';
+        let coursesFeedback = 'Very general statement. Specify course modules, curriculum structures, and how they relate to your goals.';
+        if (coursesScore >= 80) {
+          coursesLevel = 'Highly Detailed';
+          coursesFeedback = 'Outstanding! You have researched specific syllabus details and connected course options directly to your career goals.';
+        } else if (coursesScore >= 60) {
+          coursesLevel = 'Specific';
+          coursesFeedback = 'Clear mention of subject areas, but would benefit from naming exact modules or academic specialties.';
+        } else if (coursesScore >= 40) {
+          coursesLevel = 'General';
+          coursesFeedback = 'Vague description. Avoid simply saying you will study your major; identify specific subjects or courses.';
+        }
+
+        const acadLifeLen = (form.prepAcadLifeText || '').trim().split(/\s+/).filter(Boolean).length;
+        const classroomWords = ['lecture', 'seminar', 'tutorial', 'teaching', 'professor', 'faculty', 'classroom', 'interactive'];
+        const discussionWords = ['participation', 'discuss', 'discussion', 'debate', 'active', 'speak up', 'presentation', 'group'];
+        const workloadWords = ['workload', 'independent', 'self-study', 'reading', 'assignment', 'homework', 'deadline', 'critical'];
+        const assessmentWords = ['assessment', 'exam', 'test', 'grading', 'gpa', 'essay', 'project', 'evaluat'];
+        
+        const hasClassroom = classroomWords.some(w => (form.prepAcadLifeText || '').toLowerCase().includes(w));
+        const hasDiscussion = discussionWords.some(w => (form.prepAcadLifeText || '').toLowerCase().includes(w));
+        const hasWorkload = workloadWords.some(w => (form.prepAcadLifeText || '').toLowerCase().includes(w));
+        const hasAssessment = assessmentWords.some(w => (form.prepAcadLifeText || '').toLowerCase().includes(w));
+        
+        const categoryHits = [hasClassroom, hasDiscussion, hasWorkload, hasAssessment].filter(Boolean).length;
+        const acadLifeKeywords = [...classroomWords, ...discussionWords, ...workloadWords, ...assessmentWords];
+        const acadLifeKeyHits = acadLifeKeywords.filter(k => (form.prepAcadLifeText || '').toLowerCase().includes(k)).length;
+
+        let acadLifeScore = 0;
+        if (acadLifeLen > 0) {
+          if (acadLifeLen <= 15) acadLifeScore = 30;
+          else if (acadLifeLen <= 45) acadLifeScore = 55;
+          else if (acadLifeLen <= 75) acadLifeScore = 72;
+          else acadLifeScore = 85;
+
+          acadLifeScore += categoryHits * 6;
+          acadLifeScore += Math.min(acadLifeKeyHits * 2, 10);
+          acadLifeScore = Math.min(acadLifeScore, 100);
+        }
+
+        let acadLifeLevel = 'Generic Assumptions';
+        let acadLifeFeedback = 'Based on common assumptions. Research specific classroom dynamics, workload expectation, and teaching styles.';
+        if (acadLifeScore >= 80) {
+          acadLifeLevel = 'Meaningful Understanding';
+          acadLifeFeedback = 'Superb insights! You demonstrate clear knowledge of teaching styles, grading systems, and self-directed study culture.';
+        } else if (acadLifeScore >= 60) {
+          acadLifeLevel = 'Reasonably Researched';
+          acadLifeFeedback = 'Good understanding of the workload and active participation norms, though a bit generic in places.';
+        } else if (acadLifeScore >= 40) {
+          acadLifeLevel = 'Basic Understanding';
+          acadLifeFeedback = 'Basic awareness of classes, but lacks detail on assessment structures and independent study expectations.';
+        }
+
+        const prepScore = Math.round((countryScore + coursesScore + acadLifeScore) / 3);
+
+        // Weighted composite
+        const overall = Math.round(
+          essayScore * 0.20 +
+          fitScore * 0.20 +
+          completenessScore * 0.15 +
+          scholarshipScore * 0.10 +
+          compScore * 0.15 +
+          prepScore * 0.20
+        );
+
+        const dimensions = [
+          { label: 'Essay Persuasiveness', weight: '20%', score: essayScore, icon: '✍️', desc: essayScore >= 75 ? 'Strong narrative with clear motivation and impact.' : essayScore >= 50 ? 'Good content but needs stronger STAR structure and keywords.' : 'Essay needs significant improvement. Aim for 300+ words with clear goals.' },
+          { 
+            label: 'Profile-Program Fit', 
+            weight: '20%', 
+            score: fitScore, 
+            icon: '🎯', 
+            desc: fitScore >= 75 
+              ? `${isUndergrad ? 'Report card' : 'GPA'} and English scores align well with target program requirements.` 
+              : fitScore >= 50 
+                ? `Moderate fit. Strengthening IELTS or ${isUndergrad ? 'academic grades' : 'GPA'} will significantly improve chances.` 
+                : `Profile-program alignment is weak. Consider English prep before applying.` 
+          },
+          { label: 'Completeness & Eligibility', weight: '15%', score: completenessScore, icon: '📋', desc: completenessScore >= 80 ? 'Application profile is well-documented.' : 'Fill in all required fields for a complete profile assessment.' },
+          { label: 'Scholarship Match', weight: '10%', score: scholarshipScore, icon: '💰', desc: scholarshipScore >= 70 ? 'Strong scholarship match based on your profile and target award.' : 'Explore merit-based and need-based scholarships for your destination country.' },
+          { label: 'Competitiveness', weight: '15%', score: compScore, icon: '🏆', desc: compScore >= 70 ? 'Standout profile with strong extracurriculars and experience.' : 'Add leadership roles, research, or community work to differentiate yourself.' },
+          { label: 'Social & Academic Preparedness', weight: '20%', score: prepScore, icon: '🎓', desc: prepScore >= 80 ? 'Demonstrates strong, specific, and well-researched understanding of the environment, courses, and academic life.' : prepScore >= 60 ? 'Reasonable preparedness but still needs to improve specificity and depth.' : prepScore >= 40 ? 'Basic knowledge but lacks specific understanding of the academic life and courses.' : 'Very limited preparedness. Significant research is needed before applying.' }
+        ];
+
+        // STAR Framework analysis of essay
+        const starAnalysis = {
+          situation: form.essayText.toLowerCase().includes('when') || form.essayText.toLowerCase().includes('background') || form.essayText.toLowerCase().includes('growing up'),
+          task: form.essayText.toLowerCase().includes('my goal') || form.essayText.toLowerCase().includes('challenge') || form.essayText.toLowerCase().includes('aimed'),
+          action: form.essayText.toLowerCase().includes('i ') && essayLen > 50,
+          result: form.essayText.toLowerCase().includes('result') || form.essayText.toLowerCase().includes('achieved') || form.essayText.toLowerCase().includes('impact') || form.essayText.toLowerCase().includes('led to')
+        };
+
+        // Improvement Roadmap — prioritized by effort vs impact
+        const activePackage = localStorage.getItem("indies_package") || "Platinum";
+        const roadmap = [];
+
+        // Essay personal statement recommendation
+        let essayDetail = 'Structure your personal statement around Situation → Task → Action → Result. Include at least 5 motivation keywords.';
+        if (activePackage === 'Silver') {
+          essayDetail += ' Consider upgrading to Gold or Platinum to receive 1-on-1 essay mentoring and critique with scholarship awardee mentors.';
+        } else {
+          essayDetail += ` Submit your draft to your mentor for the 1-on-1 Essay Mentoring & Critique included in your ${activePackage} package.`;
+        }
+        if (essayScore < 60) {
+          roadmap.push({ priority: 'P1', tag: 'Quick Win', color: '#22c55e', title: 'Rewrite Essay Using STAR Framework', detail: essayDetail, effort: 'Low', impact: 'High' });
+        }
+
+        // IELTS course recommendation
+        let ieltsDetail = 'Enroll in target training to close the language gap. Most top programs require a minimum 6.5 Overall.';
+        if (activePackage === 'Silver') {
+          ieltsDetail += ' Your Silver package includes the IELTS Essential Course.';
+        } else if (activePackage === 'Gold') {
+          ieltsDetail += ' Your Gold package includes the IELTS Masterclass Course.';
+        } else {
+          ieltsDetail += ' Your Platinum package includes the IELTS Masterclass Pro Course.';
+        }
+        if (ielts < 6.5) {
+          roadmap.push({ priority: 'P1', tag: 'Quick Win', color: '#22c55e', title: 'Boost IELTS Score to 6.5+', detail: ieltsDetail, effort: 'Medium', impact: 'High' });
+        }
+
+        // Social & Academic Preparedness adaptation
+        let prepDetail = 'Research your target country culture, study classroom dynamics (e.g. active participation, independent workload), and list exact course modules you will take.';
+        if (activePackage === 'Silver') {
+          prepDetail += ' Consider upgrading to Gold or Platinum to access the UniPrep Course (3-Month Academic Adaptation) for classroom adaptation.';
+        } else {
+          prepDetail += ` Take advantage of the UniPrep Course (3-Month Academic Adaptation) included in your ${activePackage} package.`;
+        }
+        if (prepScore < 60) {
+          roadmap.push({ priority: 'P2', tag: 'Major Improvement', color: '#3b82f6', title: 'Enhance Social & Academic Preparedness', detail: prepDetail, effort: 'Medium', impact: 'High' });
+        }
+
+        if (!hasExtracurricular) {
+          roadmap.push({ priority: 'P2', tag: 'Major Improvement', color: '#3b82f6', title: 'Document Extracurricular Activities', detail: 'List leadership roles, volunteer work, competitions, or research projects. Scholarship committees look for well-rounded candidates.', effort: 'Low', impact: 'High' });
+        }
+
+        // Scholarship application guidance
+        let scholarshipDetail = 'Research merit-based scholarships. ';
+        if (activePackage === 'Silver') {
+          scholarshipDetail += 'Consider upgrading to Gold or Platinum for 1-on-1 scholarship guidance, or Platinum to access Mock panel interview coaching.';
+        } else if (activePackage === 'Gold') {
+          scholarshipDetail += 'Use the 1-on-1 Scholarship Application Guidance included in your Gold package. Consider upgrading to Platinum for mock interview panels.';
+        } else {
+          scholarshipDetail += 'Use the 1-on-1 Scholarship Guidance and mock panel sessions included in your Platinum package.';
+        }
+        if (!form.financialNeed && scholarshipScore < 60) {
+          roadmap.push({ priority: 'P2', tag: 'Major Improvement', color: '#3b82f6', title: 'Identify Scholarship Eligibility', detail: scholarshipDetail, effort: 'Medium', impact: 'High' });
+        }
+
+        if (isUndergrad) {
+          if (rawAcademicScore < 75) {
+            roadmap.push({ priority: 'P3', tag: 'Strategic Investment', color: '#f59e0b', title: 'Strengthen Academic Profile', detail: 'Focus on report card score improvement in your remaining semesters. An 85%+ score significantly improves admission odds at top programs.', effort: 'High', impact: 'High' });
+          }
+        } else {
+          if (rawAcademicScore < 3.0) {
+            roadmap.push({ priority: 'P3', tag: 'Strategic Investment', color: '#f59e0b', title: 'Strengthen Academic Profile', detail: 'Focus on GPA improvement in your remaining semesters. A 3.5+ GPA significantly improves admission odds at top programs.', effort: 'High', impact: 'High' });
+          }
+        }
+
+        if (completenessScore < 80) {
+          roadmap.push({ priority: 'P2', tag: 'Major Improvement', color: '#3b82f6', title: 'Complete All Profile Fields', detail: 'Ensure SAT score, work experience, and all personal details are documented for a comprehensive profile review.', effort: 'Low', impact: 'Medium' });
+        }
+
+        // Polish and mentoring check
+        let reviewDetail = 'Have your SOP reviewed by scholarship awardees or academic advisors.';
+        if (activePackage === 'Silver') {
+          reviewDetail += ' Upgrade to Gold or Platinum to unlock 1-on-1 mentoring and alumni reviews.';
+        } else {
+          reviewDetail += ` Utilize the 1-on-1 essay mentoring with alumni mentors included in your ${activePackage} package.`;
+        }
+        roadmap.push({ priority: 'P4', tag: 'Polish', color: '#8b5cf6', title: 'Get Essay Reviewed by Alumni', detail: reviewDetail, effort: 'Low', impact: 'Medium' });
+
+        // Housing and pre-departure card
+        let countryDetail = 'Research the local culture and lifestyle. ';
+        if (activePackage === 'Silver') {
+          countryDetail += 'Consider upgrading to Gold or Platinum for housing placement support and student community connections.';
+        } else {
+          countryDetail += ` Utilize the housing placement support and student network connections included in your ${activePackage} package.`;
+        }
+        if (countryScore < 60 && countryLen > 0) {
+          roadmap.push({ priority: 'P2', tag: 'Major Improvement', color: '#3b82f6', title: 'Research Cultural Adaptation', detail: countryDetail, effort: 'Low', impact: 'Medium' });
+        }
+
+        const statusLabel = overall >= 80 ? 'Highly Competitive' : overall >= 65 ? 'Competitive' : overall >= 50 ? 'Needs Strengthening' : 'Early Stage';
+        const statusColor = overall >= 80 ? '#22c55e' : overall >= 65 ? '#3b82f6' : overall >= 50 ? '#f59e0b' : '#ef4444';
+
+        return { 
+          overall, 
+          dimensions, 
+          starAnalysis, 
+          roadmap, 
+          statusLabel, 
+          statusColor, 
+          essayWordCount: essayLen,
+          prepScore,
+          prepDetails: {
+            country: { score: countryScore, level: countryLevel, feedback: countryFeedback },
+            courses: { score: coursesScore, level: coursesLevel, feedback: coursesFeedback },
+            acadLife: { score: acadLifeScore, level: acadLifeLevel, feedback: acadLifeFeedback }
+          }
+        };
+      };
+
+      const handleAnalyze = () => {
+        setLoading(true);
+        setTimeout(() => {
+          setResult(computeResult());
+          setLoading(false);
+          setStep(1);
+          setActiveTab('overview');
+          document.getElementById('scholarship-section').scrollIntoView({ behavior: 'smooth' });
+        }, 1800);
+      };
+
+      const ScoreRing = ({ score, size = 100 }) => {
+        const r = (size / 2) - 10;
+        const circ = 2 * Math.PI * r;
+        const offset = circ - (score / 100) * circ;
+        const color = score >= 75 ? '#22c55e' : score >= 50 ? '#3b82f6' : score >= 30 ? '#f59e0b' : '#ef4444';
+        return (
+          <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+            <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#e2e8f0" strokeWidth="8" />
+            <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth="8"
+              strokeDasharray={circ} strokeDashoffset={offset}
+              strokeLinecap="round" transform={`rotate(-90 ${size/2} ${size/2})`}
+              style={{ transition: 'stroke-dashoffset 1s ease-out' }}
+            />
+            <text x={size/2} y={size/2} textAnchor="middle" dominantBaseline="central"
+              fontSize={size * 0.22} fontWeight="800" fill={color}>{score}</text>
+          </svg>
+        );
+      };
+
+      return (
+        <div className="scholarship-advisor-wrapper">
+
+          {step === 0 && loading && (
+            <div className="sa-form-container" style={{ padding: '6rem 2rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{
+                width: '50px',
+                height: '50px',
+                border: '4px solid rgba(27, 94, 80, 0.1)',
+                borderTopColor: 'var(--primary-deep)',
+                borderRadius: '50%',
+                animation: 'sa-spin 1s linear infinite',
+                marginBottom: '1.5rem'
+              }}></div>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary-deep)', margin: '0 0 0.5rem 0' }}>Analyzing Scholarship Readiness</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: '420px', margin: 0 }}>Evaluating your academic profile, essay structure, country preparedness, and recommendation roadmap...</p>
+            </div>
+          )}
+
+          {step === 0 && !loading && (
+            <div className="sa-form-container">
+              <div className="sa-form-header">
+                <span className="sa-badge">🎓 Assessment Tool</span>
+                <h3 className="sa-form-title">Scholarship Application Advisor</h3>
+                <p className="sa-form-subtitle">Fill in your profile below and get an instant multi-dimensional analysis of your scholarship readiness — based on the same frameworks used by top admissions committees worldwide.</p>
+              </div>
+
+              <div className="sa-grid">
+                {/* Personal Info */}
+                <div className="sa-field-group">
+                  <label className="sa-label">Full Name</label>
+                  <input id="sa-name" className="sa-input" type="text" placeholder="e.g. Budi Santoso" value={form.name} onChange={e => handleChange('name', e.target.value)} />
+                </div>
+                <div className="sa-field-group">
+                  <label className="sa-label">
+                    {form.programLevel === 'undergraduate' ? 'Report Card Score (%)' : 'GPA (out of 4.0)'}
+                  </label>
+                  <input 
+                    id="sa-gpa" 
+                    className="sa-input" 
+                    type="number" 
+                    step={form.programLevel === 'undergraduate' ? '1' : '0.01'} 
+                    min="0" 
+                    max={form.programLevel === 'undergraduate' ? '100' : '4'} 
+                    placeholder={form.programLevel === 'undergraduate' ? 'e.g. 85' : 'e.g. 3.75'} 
+                    value={form.gpa} 
+                    onChange={e => handleChange('gpa', e.target.value)} 
+                  />
+                </div>
+                <div className="sa-field-group">
+                  <label className="sa-label">Target Country</label>
+                  <select id="sa-country" className="sa-input" value={form.targetCountry} onChange={e => handleChange('targetCountry', e.target.value)}>
+                    <option value="">Select country...</option>
+                    {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div className="sa-field-group">
+                  <label className="sa-label">Target Program / Field</label>
+                  <select id="sa-program" className="sa-input" value={form.targetProgram} onChange={e => handleChange('targetProgram', e.target.value)}>
+                    <option value="">Select program...</option>
+                    {PROGRAMS.map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                </div>
+                <div className="sa-field-group">
+                  <label className="sa-label">Program Level</label>
+                  <select id="sa-level" className="sa-input" value={form.programLevel} onChange={e => handleChange('programLevel', e.target.value)}>
+                    <option value="undergraduate">Undergraduate (S1)</option>
+                    <option value="masters">Masters (S2)</option>
+                    <option value="phd">PhD (S3)</option>
+                  </select>
+                </div>
+                <div className="sa-field-group">
+                  <label className="sa-label">IELTS Overall Score</label>
+                  <input id="sa-ielts" className="sa-input" type="number" step="0.5" min="0" max="9" placeholder="e.g. 7.0" value={form.ieltsScore} onChange={e => handleChange('ieltsScore', e.target.value)} />
+                </div>
+                <div className="sa-field-group">
+                  <label className="sa-label">SAT Score (optional)</label>
+                  <input id="sa-sat" className="sa-input" type="number" min="400" max="1600" placeholder="e.g. 1350" value={form.satScore} onChange={e => handleChange('satScore', e.target.value)} />
+                </div>
+                <div className="sa-field-group">
+                  <label className="sa-label">Target Scholarship</label>
+                  <select id="sa-scholarship" className="sa-input" value={form.targetScholarship} onChange={e => handleChange('targetScholarship', e.target.value)}>
+                    <option value="">Select scholarship...</option>
+                    {SCHOLARSHIPS.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+                <div className="sa-field-group">
+                  <label className="sa-label">Work / Research Experience</label>
+                  <input id="sa-work" className="sa-input" type="text" placeholder="e.g. 1 year internship at Google" value={form.workExperience} onChange={e => handleChange('workExperience', e.target.value)} />
+                </div>
+                <div className="sa-field-group sa-checkbox-group">
+                  <label className="sa-label">Financial Need</label>
+                  <div className="sa-toggle-wrap">
+                    <input id="sa-need" type="checkbox" className="sa-checkbox" checked={form.financialNeed} onChange={e => handleChange('financialNeed', e.target.checked)} />
+                    <label htmlFor="sa-need" className="sa-toggle">
+                      <span className="sa-toggle-thumb"></span>
+                    </label>
+                    <span className="sa-toggle-label">{form.financialNeed ? 'Yes — I need financial support' : 'No financial need'}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Essay Textarea */}
+              <div className="sa-field-group sa-essay-group">
+                <label className="sa-label">Personal Statement / Statement of Purpose
+                  <span className="sa-word-count">{form.essayText.trim().split(/\s+/).filter(Boolean).length} words</span>
+                </label>
+                <textarea
+                  id="sa-essay"
+                  className="sa-input sa-textarea"
+                  placeholder="Paste or write your personal statement here. The advisor evaluates your essay using the STAR framework (Situation, Task, Action, Result) and checks for motivation keywords, narrative quality, and alignment with your target program..."
+                  value={form.essayText}
+                  onChange={e => handleChange('essayText', e.target.value)}
+                  rows={7}
+                />
+              </div>
+
+              {/* Extracurricular */}
+              <div className="sa-field-group sa-essay-group">
+                <label className="sa-label">Extracurricular Activities & Leadership</label>
+                <textarea
+                  id="sa-extra"
+                  className="sa-input sa-textarea"
+                  placeholder="e.g. Student president 2022-2023, volunteer at local NGO, national debate champion..."
+                  value={form.extracurricular}
+                  onChange={e => handleChange('extracurricular', e.target.value)}
+                  rows={3}
+                />
+              </div>
+
+              {/* Social & Academic Preparedness Questions */}
+              <div className="sa-prep-form-header sa-essay-group mb-4" style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
+                <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--primary-deep)', margin: 0 }}>🎓 Social & Academic Preparedness</h4>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Please answer the following questions to evaluate your preparedness for studying abroad.</p>
+              </div>
+
+              <div className="sa-field-group sa-essay-group">
+                <label className="sa-label">What do you know about your country of choice?
+                  <span className="sa-word-count">{(form.prepCountryText || '').trim().split(/\s+/).filter(Boolean).length} words</span>
+                </label>
+                <textarea
+                  id="sa-prep-country"
+                  className="sa-input sa-textarea"
+                  placeholder="Describe your understanding of the country's culture, social environment, education system, lifestyle, climate, etc."
+                  value={form.prepCountryText}
+                  onChange={e => handleChange('prepCountryText', e.target.value)}
+                  rows={3}
+                />
+              </div>
+
+              <div className="sa-field-group sa-essay-group">
+                <label className="sa-label">Do you know what courses you will take?
+                  <span className="sa-word-count">{(form.prepCoursesText || '').trim().split(/\s+/).filter(Boolean).length} words</span>
+                </label>
+                <textarea
+                  id="sa-prep-courses"
+                  className="sa-input sa-textarea"
+                  placeholder="Mention specific courses, subjects, or academic curriculum you will take in your program and their relevance to your goals."
+                  value={form.prepCoursesText}
+                  onChange={e => handleChange('prepCoursesText', e.target.value)}
+                  rows={3}
+                />
+              </div>
+
+              <div className="sa-field-group sa-essay-group">
+                <label className="sa-label">How is the academic life over there?
+                  <span className="sa-word-count">{(form.prepAcadLifeText || '').trim().split(/\s+/).filter(Boolean).length} words</span>
+                </label>
+                <textarea
+                  id="sa-prep-acadlife"
+                  className="sa-input sa-textarea"
+                  placeholder="Explain teaching methods, classroom participation, workload, independent learning, and assessment systems."
+                  value={form.prepAcadLifeText}
+                  onChange={e => handleChange('prepAcadLifeText', e.target.value)}
+                  rows={3}
+                />
+              </div>
+
+              <button
+                id="sa-analyze-btn"
+                type="button"
+                className="sa-analyze-btn"
+                onClick={handleAnalyze}
+                disabled={loading || !form.ieltsScore}
+              >
+                {loading ? (
+                  <span className="sa-loading"><span className="sa-spinner"></span> Analyzing your profile...</span>
+                ) : (
+                  <span>🚀 Analyze My Scholarship Readiness</span>
+                )}
+              </button>
+              {!form.ieltsScore && <p className="sa-hint">* Please enter your IELTS score to enable analysis</p>}
+            </div>
+          )}
+
+          {step === 1 && result && (
+            <div className="sa-results">
+              {/* Results Header */}
+              <div className="sa-results-header">
+                <div className="sa-results-top">
+                  <div>
+                    <span className="sa-badge">Analysis Complete</span>
+                    <h3 className="sa-results-name">{form.name || 'Your'} Scholarship Readiness Report</h3>
+                    <p className="sa-results-meta">
+                      {form.targetProgram && <span>📚 {form.targetProgram}</span>}
+                      {form.targetCountry && <span>🌍 {form.targetCountry}</span>}
+                      {form.targetScholarship && <span>🏅 {form.targetScholarship}</span>}
+                    </p>
+                  </div>
+                  <div className="sa-overall-ring">
+                    <ScoreRing score={result.overall} size={110} />
+                    <div className="sa-overall-label" style={{ color: result.statusColor }}>{result.statusLabel}</div>
+                  </div>
+                </div>
+
+                {/* Tabs */}
+                <div className="sa-tabs">
+                  {[
+                    {id:'overview',label:'📊 Overview'},
+                    {id:'essay',label:'✍️ Essay Analysis'},
+                    {id:'preparedness',label:'🎓 Preparedness Analysis'},
+                    {id:'roadmap',label:'🗺️ Improvement Roadmap'}
+                  ].map(tab => (
+                    <button key={tab.id} type="button"
+                      className={`sa-tab ${activeTab === tab.id ? 'sa-tab-active' : ''}`}
+                      onClick={() => setActiveTab(tab.id)}
+                    >{tab.label}</button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Tab Content */}
+              <div className="sa-tab-content">
+
+                {/* Overview Tab */}
+                {activeTab === 'overview' && (
+                  <div>
+                    <div className="sa-dimensions">
+                      {result.dimensions.map((dim, i) => (
+                        <div key={i} className="sa-dim-card">
+                          <div className="sa-dim-top">
+                            <div>
+                              <div className="sa-dim-icon">{dim.icon}</div>
+                              <div className="sa-dim-label">{dim.label}</div>
+                              <div className="sa-dim-weight">Weight: {dim.weight}</div>
+                            </div>
+                            <ScoreRing score={dim.score} size={70} />
+                          </div>
+                          <div className="sa-dim-bar-wrap">
+                            <div className="sa-dim-bar">
+                              <div className="sa-dim-fill" style={{ width: `${dim.score}%`, backgroundColor: dim.score >= 75 ? '#22c55e' : dim.score >= 50 ? '#3b82f6' : '#f59e0b' }}></div>
+                            </div>
+                          </div>
+                          <p className="sa-dim-desc">{dim.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Essay Tab */}
+                {activeTab === 'essay' && (
+                  <div className="sa-essay-analysis">
+                    <h4 className="sa-section-title">📝 STAR Framework Analysis</h4>
+                    <p className="sa-section-sub">Your essay was evaluated against the STAR behavioral narrative framework used by top admissions committees.</p>
+                    <div className="sa-star-grid">
+                      {[
+                        { key: 'situation', label: 'Situation', desc: 'Does the essay establish context and background?' },
+                        { key: 'task', label: 'Task', desc: 'Is there a clear challenge or goal identified?' },
+                        { key: 'action', label: 'Action', desc: 'Are specific actions and decisions described?' },
+                        { key: 'result', label: 'Result', desc: 'Is there a measurable outcome or impact stated?' }
+                      ].map(s => (
+                        <div key={s.key} className={`sa-star-card ${result.starAnalysis[s.key] ? 'sa-star-pass' : 'sa-star-fail'}`}>
+                          <div className="sa-star-icon">{result.starAnalysis[s.key] ? '✅' : '❌'}</div>
+                          <div className="sa-star-label">{s.label}</div>
+                          <div className="sa-star-desc">{s.desc}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="sa-essay-stats">
+                      <div className="sa-stat-pill">📝 {result.essayWordCount} words</div>
+                      <div className="sa-stat-pill" style={{ borderColor: result.essayWordCount >= 300 ? '#22c55e' : '#f59e0b', color: result.essayWordCount >= 300 ? '#22c55e' : '#f59e0b' }}>
+                        {result.essayWordCount >= 300 ? '✓ Target length met (300+ words)' : `⚠ Add ${300 - result.essayWordCount} more words`}
+                      </div>
+                    </div>
+                    <div className="sa-holistic-box">
+                      <h5 className="sa-holistic-title">🔭 Holistic Admissions Framework (4 Pillars)</h5>
+                      <div className="sa-holistic-grid">
+                        {[
+                          { 
+                            label: 'Academics', 
+                            icon: '📚', 
+                            score: form.programLevel === 'undergraduate' 
+                              ? Math.min(parseFloat(form.gpa) || 0, 100) 
+                              : Math.min(Math.round((parseFloat(form.gpa) || 0) / 4 * 100), 100), 
+                            hint: form.programLevel === 'undergraduate' 
+                              ? 'Report Card & standardized test performance' 
+                              : 'GPA & standardized test performance' 
+                          },
+                          { label: 'Fit', icon: '🎯', score: form.targetProgram && form.targetCountry ? 75 : 30, hint: 'Program alignment & institutional match' },
+                          { label: 'Impact', icon: '🌍', score: form.extracurricular.length > 20 ? 70 : 25, hint: 'Community contributions & leadership' },
+                          { label: 'Potential', icon: '🚀', score: Math.round((result.dimensions[0].score + result.dimensions[4].score) / 2), hint: 'Future trajectory & growth mindset' }
+                        ].map(p => (
+                          <div key={p.label} className="sa-holistic-card">
+                            <div className="sa-holistic-icon">{p.icon}</div>
+                            <div className="sa-holistic-label">{p.label}</div>
+                            <ScoreRing score={p.score} size={60} />
+                            <div className="sa-holistic-hint">{p.hint}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Preparedness Tab */}
+                {activeTab === 'preparedness' && (
+                  <div className="sa-prep-analysis">
+                    <h4 className="sa-section-title">🎓 Social & Academic Preparedness Assessment</h4>
+                    <p className="sa-section-sub">Your answers were evaluated on specific understanding of the country, curriculum, and academic life.</p>
+                    
+                    {/* Overall Preparedness Score Box */}
+                    <div className="sa-prep-score-box">
+                      <div style={{ flex: 1, minWidth: '250px' }}>
+                        <h5 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--text-dark)', margin: '0 0 0.25rem 0' }}>Overall Preparedness Level</h5>
+                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '0 0 0.5rem 0' }}>Weight: 20%</p>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: 'bold', margin: '0 0 0.5rem 0' }}>
+                          {result.prepScore >= 80 ? '🎓 Strong Social & Academic Preparedness' :
+                           result.prepScore >= 60 ? '🎓 Reasonable Social & Academic Preparedness' :
+                           result.prepScore >= 40 ? '🎓 Basic / General Preparedness' :
+                           '🎓 Very Limited Preparedness'}
+                        </p>
+                        <p style={{ fontSize: '0.8rem', color: 'var(--text-dark)', margin: 0, padding: '0.75rem', background: '#fff', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', lineHeight: 1.5 }}>
+                          <strong>Assessment:</strong> {
+                            result.prepScore >= 80 ? 'Applicant demonstrates strong, specific, and well-researched understanding of the social and academic environment, courses, and academic life.' :
+                            result.prepScore >= 60 ? 'Applicant demonstrates reasonable social and academic preparedness but still needs to improve specificity, depth, and evidence of research.' :
+                            result.prepScore >= 40 ? 'Applicant has basic or general knowledge but lacks specific understanding of the social environment, courses, and academic life.' :
+                            'Applicant demonstrates very limited social and academic preparedness. Significant research and preparation are needed before applying.'
+                          }
+                        </p>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <ScoreRing score={result.prepScore} size={90} />
+                        <span style={{ fontSize: '0.75rem', fontWeight: 800, marginTop: '0.4rem', color: result.prepScore >= 80 ? '#22c55e' : result.prepScore >= 60 ? '#3b82f6' : result.prepScore >= 40 ? '#f59e0b' : '#ef4444' }}>
+                          {result.prepScore >= 80 ? 'Highly Prepared' : result.prepScore >= 60 ? 'Prepared' : result.prepScore >= 40 ? 'Developing' : 'Unprepared'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Breakdown by Question */}
+                    <h5 style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-dark)', margin: '1.5rem 0 0.75rem 0' }}>Breakdown by Question</h5>
+                    <div className="sa-prep-details-grid">
+                      
+                      {/* Country Card */}
+                      <div className={`sa-prep-card ${
+                        result.prepDetails.country.score >= 80 ? 'sa-prep-card-high' :
+                        result.prepDetails.country.score >= 60 ? 'sa-prep-card-medium' :
+                        result.prepDetails.country.score >= 40 ? 'sa-prep-card-low' :
+                        'sa-prep-card-poor'
+                      }`}>
+                        <div>
+                          <div className="sa-prep-card-header">
+                            <span className="sa-prep-card-title">🌍 Country of Choice</span>
+                            <span className={`sa-prep-card-badge ${
+                              result.prepDetails.country.score >= 80 ? 'sa-prep-card-badge-high' :
+                              result.prepDetails.country.score >= 60 ? 'sa-prep-card-badge-medium' :
+                              result.prepDetails.country.score >= 40 ? 'sa-prep-card-badge-low' :
+                              'sa-prep-card-badge-poor'
+                            }`}>
+                              {result.prepDetails.country.level}
+                            </span>
+                          </div>
+                          <p className="sa-prep-card-answer">
+                            &ldquo;{(form.prepCountryText || '').trim() || 'No answer provided.'}&rdquo;
+                          </p>
+                        </div>
+                        <div className="sa-prep-card-footer">
+                          <ScoreRing score={result.prepDetails.country.score} size={45} />
+                          <div className="sa-prep-card-feedback">
+                            {result.prepDetails.country.feedback}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Courses Card */}
+                      <div className={`sa-prep-card ${
+                        result.prepDetails.courses.score >= 80 ? 'sa-prep-card-high' :
+                        result.prepDetails.courses.score >= 60 ? 'sa-prep-card-medium' :
+                        result.prepDetails.courses.score >= 40 ? 'sa-prep-card-low' :
+                        'sa-prep-card-poor'
+                      }`}>
+                        <div>
+                          <div className="sa-prep-card-header">
+                            <span className="sa-prep-card-title">📚 Program & Courses</span>
+                            <span className={`sa-prep-card-badge ${
+                              result.prepDetails.courses.score >= 80 ? 'sa-prep-card-badge-high' :
+                              result.prepDetails.courses.score >= 60 ? 'sa-prep-card-badge-medium' :
+                              result.prepDetails.courses.score >= 40 ? 'sa-prep-card-badge-low' :
+                              'sa-prep-card-badge-poor'
+                            }`}>
+                              {result.prepDetails.courses.level}
+                            </span>
+                          </div>
+                          <p className="sa-prep-card-answer">
+                            &ldquo;{(form.prepCoursesText || '').trim() || 'No answer provided.'}&rdquo;
+                          </p>
+                        </div>
+                        <div className="sa-prep-card-footer">
+                          <ScoreRing score={result.prepDetails.courses.score} size={45} />
+                          <div className="sa-prep-card-feedback">
+                            {result.prepDetails.courses.feedback}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Academic Life Card */}
+                      <div className={`sa-prep-card ${
+                        result.prepDetails.acadLife.score >= 80 ? 'sa-prep-card-high' :
+                        result.prepDetails.acadLife.score >= 60 ? 'sa-prep-card-medium' :
+                        result.prepDetails.acadLife.score >= 40 ? 'sa-prep-card-low' :
+                        'sa-prep-card-poor'
+                      }`}>
+                        <div>
+                          <div className="sa-prep-card-header">
+                            <span className="sa-prep-card-title">🏫 Academic Life</span>
+                            <span className={`sa-prep-card-badge ${
+                              result.prepDetails.acadLife.score >= 80 ? 'sa-prep-card-badge-high' :
+                              result.prepDetails.acadLife.score >= 60 ? 'sa-prep-card-badge-medium' :
+                              result.prepDetails.acadLife.score >= 40 ? 'sa-prep-card-badge-low' :
+                              'sa-prep-card-badge-poor'
+                            }`}>
+                              {result.prepDetails.acadLife.level}
+                            </span>
+                          </div>
+                          <p className="sa-prep-card-answer">
+                            &ldquo;{(form.prepAcadLifeText || '').trim() || 'No answer provided.'}&rdquo;
+                          </p>
+                        </div>
+                        <div className="sa-prep-card-footer">
+                          <ScoreRing score={result.prepDetails.acadLife.score} size={45} />
+                          <div className="sa-prep-card-feedback">
+                            {result.prepDetails.acadLife.feedback}
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                )}
+
+                {/* Roadmap Tab */}
+                {activeTab === 'roadmap' && (
+                  <div className="sa-roadmap">
+                    <h4 className="sa-section-title">🗺️ Prioritized Improvement Roadmap</h4>
+                    <p className="sa-section-sub">Recommendations ranked by effort vs. impact. Tackle P1 items first for maximum ROI.</p>
+                    <div className="sa-roadmap-list">
+                      {result.roadmap.map((item, i) => (
+                        <div key={i} className="sa-roadmap-item">
+                          <div className="sa-roadmap-priority" style={{ backgroundColor: item.color + '20', color: item.color, borderColor: item.color + '40' }}>
+                            {item.priority}
+                          </div>
+                          <div className="sa-roadmap-body">
+                            <div className="sa-roadmap-header">
+                              <span className="sa-roadmap-title">{item.title}</span>
+                              <span className="sa-roadmap-tag" style={{ backgroundColor: item.color + '15', color: item.color }}>{item.tag}</span>
+                            </div>
+                            <p className="sa-roadmap-detail">{item.detail}</p>
+                            <div className="sa-roadmap-meta">
+                              <span>⚡ Effort: <strong>{item.effort}</strong></span>
+                              <span>📈 Impact: <strong>{item.impact}</strong></span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="sa-results-footer">
+                <button type="button" className="sa-back-btn" onClick={() => { setStep(0); setResult(null); }}>← Edit Profile</button>
+                <a href="https://wa.me/6281281003323?text=Halo%20saya%20ingin%20konsultasi%20scholarship%20advisor" target="_blank" rel="noopener noreferrer" className="sa-consult-btn">💬 Konsultasi dengan Advisor</a>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // Core application component
+    function App() {
+      // Configuration state
+      const [config, setConfig] = React.useState({
+        university: "University of Melbourne",
+        englishRequirementLabel: "IELTS 6.5 Overall",
+        targetWseLevel: 15,
+        minimumSAT: 1120,
+        minimumReportScore: 80,
+        monthsPerLevel: 2,
+        levels: INITIAL_LEVELS
+      });
+
+      // User input scores state
+      const [userInputs, setUserInputs] = React.useState({
+        currentLevel: 12,
+        satScore: 1050,
+        reportScore: 75
+      });
+
+      // Validation errors
+      const [errors, setErrors] = React.useState({
+        satScore: "",
+        reportScore: ""
+      });
+
+      // UI state
+      const [isConfigOpen, setIsConfigOpen] = React.useState(false);
+      const [currentView, setCurrentView] = React.useState('advisor');
+
+      // Handle user inputs with range validations
+      const handleInputChange = (field, value) => {
+        let numericVal = parseInt(value, 10);
+        let errorMsg = "";
+
+        if (field === "satScore") {
+          if (isNaN(numericVal)) {
+            errorMsg = "SAT Score must be a number";
+          } else if (numericVal < 400 || numericVal > 1600) {
+            errorMsg = "SAT Score must be between 400 and 1600";
+          }
+        } else if (field === "reportScore") {
+          if (isNaN(numericVal)) {
+            errorMsg = "Report card score must be a number";
+          } else if (numericVal < 0 || numericVal > 100) {
+            errorMsg = "Report card score must be between 0 and 100";
+          }
+        }
+
+        setErrors(prev => ({ ...prev, [field]: errorMsg }));
+        setUserInputs(prev => ({ ...prev, [field]: isNaN(numericVal) ? value : numericVal }));
+      };
+
+      // Handle custom updates to configuration parameters
+      const handleConfigChange = (field, value) => {
+        setConfig(prev => ({
+          ...prev,
+          [field]: field.includes("Score") || field.includes("Level") || field.includes("SAT") || field.includes("PerLevel")
+            ? parseInt(value, 10) || value
+            : value
+        }));
+      };
+
+      // Level Card interaction: Update selector from grid click
+      const handleLevelCardClick = (levelNumber) => {
+        setUserInputs(prev => ({ ...prev, currentLevel: levelNumber }));
+        // Smooth scroll to form section
+        document.getElementById("eligibility-section").scrollIntoView({ behavior: 'smooth' });
+      };
+
+      // Math and logical calculations based on config & user values
+      const currentLevelData = config.levels.find(l => l.level === userInputs.currentLevel) || config.levels[0];
+      const targetLevelData = config.levels.find(l => l.level === config.targetWseLevel) || config.levels[config.levels.length - 1];
+
+      const isEnglishMet = userInputs.currentLevel >= config.targetWseLevel;
+      const englishGap = isEnglishMet ? 0 : config.targetWseLevel - userInputs.currentLevel;
+      const estimatedMonths = englishGap * config.monthsPerLevel;
+
+      const isSatMet = userInputs.satScore >= config.minimumSAT;
+      const satGap = isSatMet ? 0 : config.minimumSAT - userInputs.satScore;
+
+      const isReportMet = userInputs.reportScore >= config.minimumReportScore;
+      const reportGap = isReportMet ? 0 : config.minimumReportScore - userInputs.reportScore;
+
+      const allMet = isEnglishMet && isSatMet && isReportMet;
+      const totalRequirements = 3;
+      const metRequirements = (isEnglishMet ? 1 : 0) + (isSatMet ? 1 : 0) + (isReportMet ? 1 : 0);
+      const matchPercentage = Math.round((metRequirements / totalRequirements) * 100);
+
+      // Determine matching status category based on rule priority
+      let statusCase = "";
+      if (allMet) {
+        statusCase = "ALL_MET";
+      } else if (!isEnglishMet && isSatMet && isReportMet) {
+        statusCase = "ENGLISH_ONLY_UNMET";
+      } else if (isEnglishMet && !isSatMet && isReportMet) {
+        statusCase = "SAT_ONLY_UNMET";
+      } else if (isEnglishMet && isSatMet && !isReportMet) {
+        statusCase = "REPORT_ONLY_UNMET";
+      } else {
+        statusCase = "MULTIPLE_UNMET";
+      }
+
+      return (
+        <div>
+          {/* Navbar */}
+          <nav className="navbar">
+            <div className="logo" style={{ cursor: 'pointer' }} onClick={() => setCurrentView('advisor')}>
+              <Icons.GraduationCap />
+              WSE <span>Pathway</span>
+            </div>
+            <ul className="nav-links">
+              <li><button onClick={() => setCurrentView('advisor')} className={currentView === 'advisor' ? 'active' : ''}>🎓 Scholarship Advisor</button></li>
+              <li><button onClick={() => setCurrentView('eligibility')} className={currentView === 'eligibility' ? 'active' : ''}>📋 Eligibility Checker</button></li>
+              <li><button onClick={() => setCurrentView('levels')} className={currentView === 'levels' ? 'active' : ''}>📚 WSE Levels</button></li>
+              <li><button onClick={() => setCurrentView('journey')} className={currentView === 'journey' ? 'active' : ''}>🧭 Journey Tracker</button></li>
+            </ul>
+          </nav>
+
+          {/* Render views */}
+          {currentView === 'advisor' && (
+            <>
+              {/* Hero Section */}
+              <header className="hero">
+                <div className="hero-content">
+                  <h1>Study Abroad & Scholarship Advisor</h1>
+                  <p>Get an instant multi-dimensional evaluation of your academic readiness, essay persuasiveness, and preparedness for studying abroad.</p>
+                  <div className="hero-actions" style={{ justifyContent: 'center' }}>
+                    <button onClick={() => {
+                      document.getElementById("scholarship-section").scrollIntoView({ behavior: 'smooth' });
+                    }} className="btn btn-primary">
+                      Start Assessment <Icons.ArrowRight />
+                    </button>
+                  </div>
+                </div>
+              </header>
+
+              <div className="sa-container" id="scholarship-section" style={{ display: 'block', maxWidth: '850px', margin: '0 auto', padding: '2rem 1.5rem 6rem 1.5rem' }}>
+                <div className="section-header" style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+                  <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--primary-deep)' }}>🎓 Study Abroad & Scholarship Advisor</h2>
+                  <p style={{ color: 'var(--text-muted)', maxWidth: '700px', margin: '0.5rem auto 0' }}>Get an instant analysis of your scholarship readiness based on the STAR framework, Holistic Admissions Criteria, and Multi-Dimensional scoring.</p>
+                </div>
+                <ScholarshipAdvisor />
+              </div>
+            </>
+          )}
+
+          {currentView === 'eligibility' && (
+            <>
+              <header className="hero">
+                <div className="hero-content">
+                  <h1>Evaluate University Admission Requirements</h1>
+                  <p>Check your WSE level, SAT score, and report card against target university entry criteria.</p>
+                </div>
+              </header>
+              <main className="main-container" id="eligibility-section">
+                {/* Column 1: Selector & Settings Inputs */}
+                <section className="card">
+                  <h2 className="card-title"><Icons.TrendingUp /> Evaluate University Admission Requirements</h2>
+                  
+                  <div className="form-grid">
+                    
+                    {/* WSE Selector */}
+                    <div className="form-group">
+                      <label htmlFor="wse-level">Your WSE Level Check Result</label>
+                      <select 
+                        id="wse-level"
+                        className="input-style"
+                        value={userInputs.currentLevel}
+                        onChange={(e) => handleInputChange("currentLevel", e.target.value)}
+                      >
+                        {config.levels.map(l => (
+                          <option key={l.level} value={l.level}>
+                            Level {l.level} ({l.name})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* CEFR Equivalent Display Column */}
+                    <div className="form-group">
+                      <label>Equivalent CEFR Level</label>
+                      <div className="input-style" style={{ backgroundColor: "#f8fafc", borderColor: "var(--accent-blue)", fontWeight: 600, color: "var(--accent-blue)" }}>
+                        {currentLevelData.name} ({currentLevelData.cefr})
+                      </div>
+                    </div>
+
+                    {/* Target University Requirement Display (Static-ish) */}
+                    <div className="form-group">
+                      <label>Target University & Minimum English</label>
+                      <div className="input-style" style={{ backgroundColor: "#e2e8f0", fontWeight: 600 }}>
+                        {config.university} ({config.englishRequirementLabel})
+                      </div>
+                    </div>
+
+                    {/* Exam Equivalency Display Column */}
+                    <div className="form-group">
+                      <label>Mapped English Exam Score</label>
+                      <div className="input-style" style={{ backgroundColor: "#f8fafc", borderColor: "var(--success-color)", fontWeight: 600, color: "var(--success-color)" }}>
+                        {currentLevelData.ielts} Equivalent
+                      </div>
+                    </div>
+
+                    {/* SAT Input */}
+                    <div className="form-group">
+                      <label htmlFor="sat-score">Your SAT Score</label>
+                      <input 
+                        id="sat-score"
+                        type="number"
+                        className="input-style"
+                        value={userInputs.satScore}
+                        onChange={(e) => handleInputChange("satScore", e.target.value)}
+                      />
+                      {errors.satScore && <span className="error-text">{errors.satScore}</span>}
+                      <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+                        Minimum Target: {config.minimumSAT}
+                      </span>
+                    </div>
+
+                    {/* Report Card Input */}
+                    <div className="form-group">
+                      <label htmlFor="report-score">Your Report Card Score (GPA %)</label>
+                      <input 
+                        id="report-score"
+                        type="number"
+                        className="input-style"
+                        value={userInputs.reportScore}
+                        onChange={(e) => handleInputChange("reportScore", e.target.value)}
+                      />
+                      {errors.reportScore && <span className="error-text">{errors.reportScore}</span>}
+                      <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+                        Minimum Target: {config.minimumReportScore}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Collapsible Admin/Configuration Panel */}
+                  <div style={{ marginTop: "2rem" }}>
+                    <div className="config-header">
+                      <span style={{ fontWeight: 600, fontSize: "0.95rem" }}>Requirements Configuration</span>
+                      <button 
+                        className="config-toggle-btn"
+                        onClick={() => setIsConfigOpen(!isConfigOpen)}
+                      >
+                        <Icons.Settings /> {isConfigOpen ? "Hide Config Panel" : "Adjust Requirements"}
+                      </button>
+                    </div>
+
+                    {isConfigOpen && (
+                      <div className="config-panel">
+                        <h3 style={{ fontSize: "1rem", fontWeight: 700, marginBottom: "1rem" }}>Modify Requirements & Modeling</h3>
+                        <div className="form-grid">
+                          <div className="form-group">
+                            <label>Target University</label>
+                            <input 
+                              type="text" 
+                              className="input-style" 
+                              value={config.university} 
+                              onChange={(e) => handleConfigChange("university", e.target.value)}
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label>English Requirement Label</label>
+                            <input 
+                              type="text" 
+                              className="input-style" 
+                              value={config.englishRequirementLabel} 
+                              onChange={(e) => handleConfigChange("englishRequirementLabel", e.target.value)}
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label>Target WSE Level</label>
+                            <select 
+                              className="input-style" 
+                              value={config.targetWseLevel} 
+                              onChange={(e) => handleConfigChange("targetWseLevel", e.target.value)}
+                            >
+                              {config.levels.map(l => (
+                                <option key={l.level} value={l.level}>Level {l.level}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="form-group">
+                            <label>Months Per WSE Level</label>
+                            <input 
+                              type="number" 
+                              className="input-style" 
+                              value={config.monthsPerLevel} 
+                              onChange={(e) => handleConfigChange("monthsPerLevel", e.target.value)}
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label>Minimum SAT Requirement</label>
+                            <input 
+                              type="number" 
+                              className="input-style" 
+                              value={config.minimumSAT} 
+                              onChange={(e) => handleConfigChange("minimumSAT", e.target.value)}
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label>Min Report Card Requirement</label>
+                            <input 
+                              type="number" 
+                              className="input-style" 
+                              value={config.minimumReportScore} 
+                              onChange={(e) => handleConfigChange("minimumReportScore", e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </section>
+
+                {/* Column 2: Dashboard Real-Time Results Output */}
+                <section className="results-container">
+                  {/* Overall Progress Circle/Visual */}
+                  <div className="card" style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+                    <h3 style={{ fontSize: "1.1rem", fontWeight: 700, color: "var(--text-muted)", marginBottom: "1rem" }}>
+                      Eligibility Match Status
+                    </h3>
+                    <div style={{ position: "relative", width: "120px", height: "120px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1rem" }}>
+                      <svg width="120" height="120" viewBox="0 0 120 120" style={{ transform: "rotate(-90deg)" }}>
+                        <circle cx="60" cy="60" r="50" fill="transparent" stroke="var(--border-color)" strokeWidth="10" />
+                        <circle 
+                          cx="60" 
+                          cy="60" 
+                          r="50" 
+                          fill="transparent" 
+                          stroke={allMet ? "var(--success-color)" : matchPercentage > 33 ? "var(--warning-color)" : "var(--danger-color)"} 
+                          strokeWidth="10" 
+                          strokeDasharray="314"
+                          strokeDashoffset={314 - (314 * matchPercentage) / 100}
+                          style={{ transition: "stroke-dashoffset 0.8s ease-in-out" }}
+                        />
+                      </svg>
+                      <span style={{ position: "absolute", fontSize: "1.5rem", fontWeight: 800 }}>
+                        {matchPercentage}%
+                      </span>
+                    </div>
+                    <p style={{ fontWeight: 600, fontSize: "0.95rem" }}>
+                      {metRequirements} of {totalRequirements} requirements met
+                    </p>
+                  </div>
+
+                  {/* Status Case UI outputs */}
+                  {statusCase === "ALL_MET" && (
+                    <div className="status-card status-success">
+                      <div className="status-header">
+                        <Icons.Check />
+                        <span className="status-title">You're on track!</span>
+                      </div>
+                      <p className="status-description"><strong>Status:</strong> Requirements Matched</p>
+                      <p>Congratulations! Your current profile meets or exceeds all admission requirements for the <strong>{config.university}</strong>.</p>
+                    </div>
+                  )}
+
+                  {statusCase === "ENGLISH_ONLY_UNMET" && (
+                    <div className="status-card status-warning">
+                      <div className="status-header">
+                        <Icons.Info />
+                        <span className="status-title">You're not there yet — but you have a clear path.</span>
+                      </div>
+                      <p className="status-description"><strong>Still needed:</strong> {englishGap} WSE levels</p>
+                      <p className="status-description"><strong>Estimated learning time:</strong> Approximately {estimatedMonths} months</p>
+                      
+                      <div className="pathway-container">
+                        <h4 style={{ fontSize: "0.85rem", fontWeight: 700, margin: "1rem 0 0.5rem 0" }}>Learning Roadmap:</h4>
+                        <div className="pathway-roadmap">
+                          <div className="pathway-step current">
+                            <span className="pathway-step-label">Current</span>
+                            <div className="pathway-step-badge">Lvl {userInputs.currentLevel}</div>
+                            <span className="pathway-step-sub">{currentLevelData.ielts}</span>
+                          </div>
+
+                          <div className="pathway-connector">
+                            <div className="pathway-connector-line">
+                              <div className="pathway-connector-progress"></div>
+                            </div>
+                            <div className="pathway-connector-badge">
+                              +{englishGap} {englishGap === 1 ? 'Level' : 'Levels'}
+                            </div>
+                            <span className="pathway-connector-subtext">~{estimatedMonths} {estimatedMonths === 1 ? 'month' : 'months'}</span>
+                          </div>
+
+                          <div className="pathway-step target">
+                            <span className="pathway-step-label">Target</span>
+                            <div className="pathway-step-badge">Lvl {config.targetWseLevel}</div>
+                            <span className="pathway-step-sub">{config.englishRequirementLabel.replace("Overall", "").trim()}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <p style={{ fontSize: "0.85rem", fontStyle: "italic", marginTop: "0.5rem" }}>
+                        *At an estimated pace of 1 level every {config.monthsPerLevel} months, reaching your target may take approximately {estimatedMonths} months. Based on the current education progress model.
+                      </p>
+                    </div>
+                  )}
+
+                  {statusCase === "SAT_ONLY_UNMET" && (
+                    <div className="status-card status-danger">
+                      <div className="status-header">
+                        <Icons.X />
+                        <span className="status-title">SAT score still needs improvement.</span>
+                      </div>
+                      <p className="status-description">You are <strong>{satGap} points</strong> below the minimum requirement.</p>
+                      <p>You have already cleared the English proficiency hurdle! With targeted practice on the SAT math and reading sections, you're closer than you think to closing the remaining {satGap} points gap.</p>
+                    </div>
+                  )}
+
+                  {statusCase === "REPORT_ONLY_UNMET" && (
+                    <div className="status-card status-danger">
+                      <div className="status-header">
+                        <Icons.X />
+                        <span className="status-title">Your report card score is below the current requirement.</span>
+                      </div>
+                      <p className="status-description">You need approximately <strong>{reportGap} more points</strong> to meet the current requirement.</p>
+                      <p>Your English proficiency and SAT scores are excellent! Try discussing academic improvement paths with your teachers to boost your average report card score to the {config.minimumReportScore} target threshold.</p>
+                    </div>
+                  )}
+
+                  {statusCase === "MULTIPLE_UNMET" && (
+                    <div className="status-card status-danger">
+                      <div className="status-header">
+                        <Icons.X />
+                        <span className="status-title">You still have a few requirements to work on.</span>
+                      </div>
+                      <p className="status-description">Let's see what you need to improve to reach your university goals.</p>
+                      
+                      <div style={{ marginTop: "1rem" }}>
+                        <h4 style={{ fontSize: "0.85rem", fontWeight: 700, margin: "0.5rem 0" }}>Priority Areas:</h4>
+                        <ol style={{ fontSize: "0.9rem", paddingLeft: "1.25rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                          {!isEnglishMet && (
+                            <li>
+                              <strong>English Level ({englishGap} levels gap):</strong> Reaching Level {config.targetWseLevel} is the highest priority. Estimated study time: ~{estimatedMonths} months.
+                            </li>
+                          )}
+                          {!isSatMet && (
+                            <li>
+                              <strong>SAT Preparation ({satGap} points gap):</strong> Work on mock papers to elevate your current score from {userInputs.satScore} to {config.minimumSAT}.
+                            </li>
+                          )}
+                          {!isReportMet && (
+                            <li>
+                              <strong>Report Card Average ({reportGap}% gap):</strong> Improve semester grading scores to reach a minimum of {config.minimumReportScore}%.
+                            </li>
+                          )}
+                        </ol>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Checklist details */}
+                  <div className="card">
+                    <h3 className="card-title" style={{ fontSize: "1.1rem" }}><Icons.Check /> Requirement Details</h3>
+                    <ul className="checklist">
+                      <li className="checklist-item">
+                        <span className="checklist-icon" style={{ color: isEnglishMet ? "var(--success-color)" : "var(--danger-color)" }}>
+                          {isEnglishMet ? <Icons.Check /> : <Icons.X />}
+                        </span>
+                        <div>
+                          <strong>English Level: </strong> 
+                          {isEnglishMet 
+                            ? `Cleared (Lvl ${userInputs.currentLevel} meets Target Lvl ${config.targetWseLevel})` 
+                            : `Lvl ${userInputs.currentLevel} of Target Lvl ${config.targetWseLevel} (${config.englishRequirementLabel})`
+                          }
+                        </div>
+                      </li>
+                      <li className="checklist-item">
+                        <span className="checklist-icon" style={{ color: isSatMet ? "var(--success-color)" : "var(--danger-color)" }}>
+                          {isSatMet ? <Icons.Check /> : <Icons.X />}
+                        </span>
+                        <div>
+                          <strong>SAT Score: </strong> 
+                          {userInputs.satScore} (Min requirement: {config.minimumSAT})
+                          {!isSatMet && <span style={{ marginLeft: "0.5rem", color: "var(--danger-color)" }}>(Needs {satGap} pts)</span>}
+                        </div>
+                      </li>
+                      <li className="checklist-item">
+                        <span className="checklist-icon" style={{ color: isReportMet ? "var(--success-color)" : "var(--danger-color)" }}>
+                          {isReportMet ? <Icons.Check /> : <Icons.X />}
+                        </span>
+                        <div>
+                          <strong>Report Card: </strong> 
+                          {userInputs.reportScore}% (Min requirement: {config.minimumReportScore}%)
+                          {!isReportMet && <span style={{ marginLeft: "0.5rem", color: "var(--danger-color)" }}>(Needs {reportGap}%)</span>}
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </section>
+              </main>
+            </>
+          )}
+
+          {currentView === 'journey' && (
+            <>
+              <header className="hero">
+                <div className="hero-content">
+                  <h1>INDIES Student Journey & Package Tracker</h1>
+                  <p>Explore the A-Z steps of the INDIES admission roadmap and track your progress in real-time.</p>
+                </div>
+              </header>
+              <div className="main-container" style={{ display: 'block', maxWidth: '1200px', margin: '0 auto', padding: '2rem 1rem 6rem 1rem' }}>
+                <section className="levels-section" style={{ marginTop: 0, padding: 0 }}>
+                  <StudentJourneyTracker userInputs={userInputs} config={config} />
+                </section>
+              </div>
+            </>
+          )}
+
+          {currentView === 'levels' && (
+            <>
+              <header className="hero">
+                <div className="hero-content">
+                  <h1>Understand WSE Level Check</h1>
+                  <p>Explore Wall Street English level progression, CEFR mapping bands, and IELTS equivalents (Levels 1 to 20).</p>
+                </div>
+              </header>
+              <div className="main-container" style={{ display: 'block', maxWidth: '1000px', margin: '0 auto', padding: '2rem 1rem 6rem 1rem' }}>
+                <section className="levels-section" style={{ marginTop: 0, padding: 0 }}>
+                  
+                  {/* WSE Level Scale Table */}
+                  <div className="wse-scale-container">
+                    <div className="wse-scale-header">
+                      <div>CEFR Band & Category</div>
+                      <div>WSE Levels</div>
+                      <div>Mapped Exam Equivalent</div>
+                    </div>
+
+                    {[
+                      { name: "Mastery", cefr: "CEFR C1", color: "#0f172a", levels: [18, 19, 20], exams: "IELTS 7.0 - 7.5" },
+                      { name: "Milestone", cefr: "CEFR B2", color: "#0284c7", levels: [14, 15, 16, 17], exams: "IELTS 6.0 - 7.0" },
+                      { name: "Threshold", cefr: "CEFR B1", color: "#06b6d4", levels: [10, 11, 12, 13], exams: "IELTS 5.0 - 6.0" },
+                      { name: "Upper Waystage", cefr: "CEFR A2", color: "#ef4444", levels: [6, 7, 8, 9], exams: "IELTS 4.0 - 5.0" },
+                      { name: "Waystage", cefr: "CEFR A1", color: "#f87171", levels: [4, 5], exams: "IELTS 3.5 - 4.0" },
+                      { name: "Survival", cefr: "CEFR < A1", color: "#fdba74", levels: [1, 2, 3], exams: "IELTS 3.0 - 3.5" }
+                    ].map(band => (
+                      <div 
+                        key={band.name} 
+                        className="wse-scale-row" 
+                        style={{ borderLeft: `5px solid ${band.color}`, paddingLeft: "1rem" }}
+                      >
+                        <div className="wse-band-info">
+                          <span className="wse-band-name">{band.name}</span>
+                          <span className="wse-band-cefr">{band.cefr}</span>
+                        </div>
+                        <div className="wse-level-blocks">
+                          {band.levels.map(lvl => {
+                            const isSelected = userInputs.currentLevel === lvl;
+                            const isTarget = config.targetWseLevel === lvl;
+                            return (
+                              <button 
+                                key={lvl} 
+                                onClick={() => handleLevelCardClick(lvl)}
+                                className={`wse-level-btn ${isSelected ? 'active' : ''} ${isTarget ? 'target' : ''}`}
+                                title={`Click to set your current level as Level ${lvl}`}
+                                style={{
+                                  borderColor: isSelected 
+                                    ? "var(--accent-blue)" 
+                                    : isTarget 
+                                      ? "var(--success-color)" 
+                                      : "var(--border-color)"
+                                }}
+                              >
+                                {lvl}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        <div className="wse-band-exams">
+                          {band.exams}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Selected Level Detail Display Card */}
+                  <div className="level-detail-card card" style={{ marginTop: "2rem", borderLeft: "5px solid var(--accent-blue)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem", marginBottom: "1rem" }}>
+                      <div>
+                        <span className="level-badge" style={{ marginBottom: "0.5rem" }}>
+                          Selected Level: Level {currentLevelData.level}
+                        </span>
+                        <h3 style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--primary-deep)" }}>
+                          {currentLevelData.name} ({currentLevelData.cefr})
+                        </h3>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <span className="level-badge" style={{ backgroundColor: "var(--success-bg)", color: "var(--success-color)" }}>
+                          Equivalency: {currentLevelData.ielts}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <p style={{ color: "var(--text-muted)", fontSize: "1.05rem", marginBottom: "1.5rem", fontWeight: 400 }}>
+                      {currentLevelData.description}
+                    </p>
+                    
+                    <h4 className="level-skills-title" style={{ fontSize: "0.9rem", color: "var(--primary-deep)" }}>
+                      Standard Learning Abilities
+                    </h4>
+                    <ul className="level-skills-list" style={{ marginTop: "0.5rem" }}>
+                      {currentLevelData.abilities.map((ability, idx) => (
+                        <li key={idx} style={{ fontSize: "0.95rem" }}>{ability}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </section>
+              </div>
+            </>
+          )}
+
+          {/* Footer */}
+          <footer>
+            <div className="footer-logo">WSE Pathway</div>
+            <p>© {new Date().getFullYear()} WSE Pathway. Built to empower language learning targets and academic eligibility mapping.</p>
+          </footer>
+        </div>
+      );
+    }
+
+    // Render React root
+    const rootElement = document.getElementById('root');
+    const root = ReactDOM.createRoot(rootElement);
+    root.render(<App />);
+
+  </script>
+</body>
+</html>
